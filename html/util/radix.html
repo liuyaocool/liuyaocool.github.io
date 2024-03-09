@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>进制转换</title>
+    <link rel="stylesheet" href="../../css/theme.css"/>
+
+    <style>
+        table input {
+            width: 500px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="app" style="padding: 10px;">
+    <table>
+        <tr v-for="(val, key) in radixs">
+            <td>{{ key }}进制</td>
+            <td><input type="text" @input="radixInput(key, $event.target.value)" v-model="radixs[key]"></td>
+        </tr>
+    </table>
+    <input type="number" v-model="newRadix"
+           oninput="vm.newRadix=value>36?36:(value<2?2:value)"
+           style="width: 36px;margin: 10px;">
+    <button @click="addRadix">添加进制（2~36）</button>
+</div>
+<script src="../../js/base.js"></script>
+<script src="../../js/vue3.global.js"></script>
+<script src="radix.js"></script>
+</body>
+</html>

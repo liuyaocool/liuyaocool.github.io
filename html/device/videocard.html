@@ -1,0 +1,64 @@
+xrandr<!-- saved from url=(0029)https://cznull.github.io/vsbm -->
+<html lang="en" data-darkreader-mode="dynamic" data-darkreader-scheme="dark">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>显卡检测</title>
+    <style>
+        body {
+            background: #131115;
+        }
+
+        #c1 {
+            background: #fbf7fe;
+        }
+
+        #btn {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+        }
+
+        #c1 {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+        }
+
+        #main {
+            transform-origin: 0px 0px;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+        }
+
+        #kernel {
+            width: 536px;
+            height: 336px;
+        }
+
+        #config {
+            position: fixed;
+            left: 0px;
+            top: 30px;
+            display: none;
+        }
+    </style>
+</head>
+<body style="overflow-x:hidden;overflow-y:hidden">
+<div id="main" style="width: 1024px; height: 1024px; transform: scale(0.939453, 0.939453);">
+    <canvas id="c1" width="1024" height="1024">
+        <span>浏览器不支持canvas</span>
+    </canvas>
+</div>
+<button id="btn">CONFIG</button>
+<div id="config" style="display: none;">
+    <textarea name="" id="kernel" cols="30" rows="10"></textarea>
+    <br>
+    <button id="apply">APPLY</button>
+    <button id="cancle">CANCLE</button>
+</div>
+
+<script src="videocard.js"></script>
+
+</body>
+</html>

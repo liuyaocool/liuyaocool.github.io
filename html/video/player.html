@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>视频播放器</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        .size-control {
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<video id="video0" controls="controls"></video>
+<div class="size-control">
+    <input class="form-control" type="file" style="height:auto;" id="video" name="video" /><br>
+    <input type="button" onclick="resetVideo()" value="重置">
+    <input type="button" onclick="fullPage()" value="网页全屏">
+    <br>
+    <input id="widthRange" type="range" step="0.01" min="0" max="1" oninput="widthRangeChange(this)"/><br>
+    <input id="heightRange" type="range" step="0.01" min="0" max="1" oninput="heightRangeChange(this)"/>
+</div>
+
+<script>
+
+    let videoDom = document.getElementById('video0');
+
+    document.getElementById('video').onchange = function(ev) {
+        videoDom.src = getObjectURL(ev.target.files[0]);
+    }
+
+    function widthRangeChange(dom) {
+        videoDom.style.objectFit = 'fill';
+        videoDom.style.width = dom.value * 100 + '%';
+    }
+
+    function heightRangeChange(dom) {
+        videoDom.style.objectFit = 'fill';
+        videoDom.style.height = dom.value * 100 + '%';
+    }
+
+    function resetVideo() {
+        videoDom.style.objectFit = '';
+        videoDom.style.height = '';
+        videoDom.style.width = '';
+    }
+
+    function fullPage() {
+        videoDom.style.objectFit = '';
+        videoDom.style.height = '100%';
+        videoDom.style.width = '100%';
+    }
+
+    //建立一个可存取到该file的url
+    function getObjectURL(file) {
+        if (window.createObjectURL != undefined) { // basic
+            return window.createObjectURL(file);
+        } else if (window.URL != undefined) { // mozilla(firefox)
+            return  window.URL.createObjectURL(file);
+        } else if (window.webkitURL != undefined) { // webkit or chrome
+            return  window.webkitURL.createObjectURL(file);
+        }
+        return null;
+    }
+</script>
+
+</body>
+</html>

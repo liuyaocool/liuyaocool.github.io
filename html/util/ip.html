@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>local IP</title>
+    <link rel="stylesheet" href="../../css/theme.css"/>
+
+    <style>
+        #ip {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<span id="ip"></span>
+<button onclick="window.open('https://qifu-api.baidubce.com/ip/local/geo/v1/district?')">详情</button>
+
+<script src="../../js/config.js"></script>
+<script src="../../js/base.js"></script>
+<script>
+    doHttp({
+        method: 'get',
+        url: Global.apiPath + '/utils/getIP',
+        success: function(res) {
+            document.getElementById('ip').innerText = res;
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<html>
+<head>
+    <title>WebRTC ScreenConnection</title>
+    <style>
+        video {
+            width: 960px;
+        }
+
+        textarea {
+            width: 500px;
+            height: 186px;
+        }
+
+        #candidates {
+            border-collapse: collapse;
+        }
+        #candidates td {
+            border: 1px solid white;
+            padding: 2px 10px;
+        }
+
+        .thead {
+            background-color: gray;
+            font-weight: bold;
+        }
+
+        .candidate:hover {
+            background-color: #0aab90;
+        }
+
+        label span {
+            vertical-align: top;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <table id="candidates">
+        <tr>
+            <td colspan="4"><video id="localVideo" autoplay playsinline controls></video></td>
+            <td :rowspan="2 + candidates.length">
+                <span style="color: #77ff1a; font-size: 58px;">state: {{state}}</span><br>
+                <br>
+                <label><span>offer.type: </span><input v-model="offer.type" readonly></label><br>
+                <label><span>offer.sdp : </span><textarea v-model="offer.sdp" readonly></textarea></label><br>
+                <br>
+                <label><span>answer.type: </span><input type="text" v-model="answer.type"></label><br>
+                <label><span>answer.sdp : </span><textarea v-model="answer.sdp"></textarea></label><br>
+                <br>
+                <button onclick="shareScreen()">share screen</button>
+                <button onclick="connClient()">con client</button>
+                <br>
+            </td>
+        </tr>
+        <tr class="thead">
+            <td>sdpMid</td>
+            <td>sdpMLineIndex</td>
+            <td>candidate</td>
+            <td>options</td>
+        </tr>
+        <tr v-for="(row, i) in candidates" class="candidate">
+            <td>{{row.sdpMid}}</td>
+            <td>{{row.sdpMLineIndex}}</td>
+            <td>{{row.candidate}}</td>
+            <td>
+<!--                <input type="button" @onclick="copyClient(i)" value="copy client url">-->
+                <input type="button" @click="openClient(i)" value="open client">
+            </td>
+        </tr>
+    </table>
+
+<!--    firefox not support this v-model -->
+<!--    <label v-for="(val,key,i) in candidate"><br>candidate.{{key}}: <input style="width: 700px" type="text" v-model="val"></label>-->
+
+</div>
+
+<script src="../../js/vue3.global.js"></script>
+<script>
+    let pc;
+    const app = Vue.createApp({
+        data() {
+            return {
+                answer: { type:'answer', sdp: '' },
+                offer: { type: '', sdp: '' },
+                candidates: [
+                    // { candidate: '', sdpMid: '', sdpMLineIndex: 0},
+                ],
+                state: null,
+                localStream: null
+            }
+        },
+        created() {},
+        methods: {
+            createClientUrl(idx) {
+                let paths = location.pathname.split("/");
+                paths[paths.length-1] = "client.html";
+                let param = JSON.stringify({offer: app.offer, candidate: app.candidates[idx]});
+                param = encodeURIComponent(param);
+                return `${location.origin}${paths.join('/')}#${param}`;
+            },
+            openClient(idx) {
+                let url = this.createClientUrl(idx);
+                window.open(url);
+            }
+        },
+    }).mount("#app");
+
+    function shareScreen() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+            alert("getDisplayMedia is not supported!")
+            return;
+        }
+        navigator.mediaDevices.getDisplayMedia({video: {frameRate: {ideal: 30, max: 30}}, audio: true})
+            .then(stream => {
+                pc = new RTCPeerConnection({
+                    // "iceServers": [{"url": "stun:stun.1.google.com:19302"}]
+                    // "iceServers": [{"url": "stun:192.168.61.1:3478"}],
+                    // 'iceServers':[{
+                    //     'urls':'turn:127.0.0.1:3478',
+                    //     'credential':'123456',
+                    //     'username':'huang'
+                    // }]
+                });
+                stream.getTracks().forEach((track)=>{
+                    pc.addTrack(track, stream);
+                });
+                pc.oniceconnectionstatechange = (event) => {
+                    app.state = pc.iceConnectionState;
+                }
+                pc.onicecandidate = (e) =>{
+                    if (e.candidate && e.candidate.candidate) {
+                        app.candidates.push({
+                            candidate: e.candidate.candidate,
+                            sdpMLineIndex: e.candidate.sdpMLineIndex,
+                            sdpMid: e.candidate.sdpMid,
+                        });
+                    }
+                }
+                // 监听track,获取远端视频流视频
+                pc.createOffer().then(offer => {
+                    app.offer.sdp = offer.sdp;
+                    app.offer.type = offer.type;
+                    pc.setLocalDescription(offer);
+                });
+                document.getElementById('localVideo').srcObject = (app.localStream = stream)
+            })
+            .catch(err => alert("getUserMedia error: " + err));
+    }
+
+    function connClient() {
+        pc.setRemoteDescription(app.answer);
+    }
+
+</script>
+</body>
+</html>

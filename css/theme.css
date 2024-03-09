@@ -1,0 +1,52 @@
+body,html{
+    height: 100%;
+    margin: 0;
+    border: 0;
+    /*background-color: #181a1b;*/
+    color: white;
+    position: relative;
+}
+
+textarea, input {
+    background-color: #2e3133ed;
+    border: gray 1px solid;
+    color: white;
+    outline: none;
+    padding: 5px 10px;
+}
+
+textarea:focus, input:focus {
+    border: white 1px solid;
+}
+
+a {
+    color: #00ffa8;
+    /*color: #daff00;*/
+}
+
+ul {
+    margin: 0;
+    padding: 20px 43px;
+}
+li {
+    margin: 5px 0;
+}
+/* li point */
+::marker {
+    color: #00f2ff;
+}
+
+input[type=submit], input[type=button], button {
+    color: white;
+    background-color: #02937cc7;
+    border-color: #0fffd7 #0aab90 #0aab90 #0fffd7;
+    border-style: solid;
+    cursor: pointer;
+}
+input[type=submit]:hover, input[type=button]:hover, button:hover {
+    background-color: #037765c7;
+}
+input[type=submit]:active, input[type=button]:active, button:active {
+    background-color: #023c31c7;
+    border-color: #0aab90 #0fffd7 #0fffd7 #0aab90;
+}

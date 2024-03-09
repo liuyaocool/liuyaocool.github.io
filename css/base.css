@@ -1,0 +1,14 @@
+body,html{
+    height: 100%;
+    margin: 0;
+    border: 0;
+    background-color: #181a1b;
+}
+
+.text_bkg {
+    /*background: url(/img/oil_flower.gif);*/
+    background-size: contain;
+    background-position: top left;
+    -webkit-background-clip: text;
+    color: transparent;
+}

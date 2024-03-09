@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>menu</title>
+    <link rel="stylesheet" href="css/theme.css"/>
+</head>
+
+<style>
+    body {
+        background: url(img/background.gif);
+        background-size: contain;
+    }
+    body::before {
+        content: ' ';
+        background-color: #0000009e;
+        /* background: url("img/background.gif"); */
+        /* background-size: contain; */
+        /* display: block; */
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        /*pointer-events: none;*/
+        z-index: -1;
+    }
+    body::after {
+        content: ' ';
+        background: url("img/party_parrot.gif");
+        width: 28px;
+        height: 28px;
+        display: block;
+        background-size: cover;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+    }
+    ul {
+        width: fit-content;
+        padding: 20px 25px;
+    }
+    iframe {
+        width: calc(100% - 206px);
+        height: 100%;
+        position: absolute;
+        border: none;
+        top: 0;
+        right: 0;
+    }
+    div li {
+        padding-left: 16px;
+    }
+    ul > li {
+        font-size: 18px;
+    }
+</style>
+<body>
+
+<ul>
+    <li><a href="javascript:showMenu('demo')">demo</a></li>
+    <div style="display:none;" id="demo">
+        <li><a target="main" href="html/demo/button/menu.html">按钮样式</a></li>
+        <li><a target="main" href="html/demo/heart.html">心</a></li>
+        <li><a target="main" href="html/demo/box-shadow.html">box 阴影</a></li>
+    </div>
+    <li><a href="javascript:showMenu('util')">小工具</a></li>
+    <div style="display:none;"  id="util">
+        <li><a target="main" href="html/util/radix.html">进制转换</a></li>
+        <li><a target="main" href="html/util/bezier.html">贝塞尔动画</a></li>
+        <li><a target="main" href="html/util/ip.html">IP</a></li>
+    </div>
+    <li><a href="javascript:showMenu('device')">硬件工具</a></li>
+    <div style="display:none;"  id="device">
+        <li><a target="main" href="html/device/keyboard_check.html">键盘检测</a></li>
+        <li><a target="main" href="html/device/videocard.html">显卡检测</a></li>
+    </div>
+    <li><a href="javascript:showMenu('network')">网络工具</a></li>
+    <div style="display:none;"  id="network">
+        <li><a target="main" href="html/network/m3u8.html">m3u8</a></li>
+    </div>
+    <li><a href="javascript:showMenu('video')">视频工具</a></li>
+    <div style="display:none;"  id="video">
+        <li><a target="main" href="html/video/player.html">视频播放</a></li>
+        <li><a target="main" href="html/video/flvjs.html">flvjs流播放</a></li>
+        <li><a target="main" href="html/video/screen_server.html">屏幕分享-分享端</a></li>
+        <li><a target="main" href="html/video/screen_client.html">屏幕分享-接收端</a></li>
+    </div>
+    <li><a href="javascript:showMenu('datastructure')">数据结构</a></li>
+    <div style="display:none;"  id="datastructure">
+        <li><a target="main" href="html/datastructure/AVLTree.html">AVLTree</a></li>
+        <li><a target="main" href="html/datastructure/BinarySearchTree.html">BinarySearchTree</a></li>
+        <li><a target="main" href="html/datastructure/BPlusTree.html">B<sup>+</sup> Tree</a></li>
+        <li><a target="main" href="html/datastructure/BTree.html">B Tree</a></li>
+        <li><a target="main" href="html/datastructure/RedBlackTree.html">RedBlackTree</a></li>
+        </div>
+</ul>
+
+<iframe src="" name="main"></iframe>
+
+<script>
+    function showMenu(id) {
+        var sty = document.getElementById(id).style;
+        sty.display = 'none' == sty.display ? '' : 'none';
+    }
+</script>
+</body>
+</html>

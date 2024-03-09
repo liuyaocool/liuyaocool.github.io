@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>flv.js流播放</title>
+    <link rel="stylesheet" href="../../css/theme.css"/>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+<input id="flvurl" style="width: calc(100% - 93px);" oninput="sessionStorage.flvurl = this.value">
+<input type="button" value="播放" onclick="flvInit(document.getElementById('flvurl').value);">
+
+<video id="video0" height="100%" controls="controls" muted></video>
+
+<script src="../../js/flv.js"></script>
+<script>
+    if (!sessionStorage.flvurl) {
+        sessionStorage.flvurl = `${location.protocol}//${location.hostname}:8080/live?port=1935&app=mylive&stream=obspush`;
+    }
+    document.getElementById('flvurl').value = sessionStorage.flvurl;
+    let inte;
+    function flvInit(flvurl) {
+        let videoElement = document.getElementById("video0");
+        let flvPlayer = flvjs.createPlayer(
+            {
+                type: 'flv',
+                isLive: true,
+                // hasAudio: false,
+                // hasVideo: true,
+                // withCredentials: false,
+                // cors: true,
+                url: flvurl
+            },
+            {
+                enableWorker: false,
+                //lazyLoadMaxDuration: 3 * 60,
+                //seekType: 'range',
+                //fixAudioTimestampGap: false,
+                enableStashBuffer: false,
+                stashInitialSize: 128, // 减少首帧显示等待时长
+                // autoCleanupSourceBuffer: true,
+                // isLive: true,
+                // lazyLoad: false,
+            }
+        );
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load();
+        videoElement.play();
+
+        if (inte) {
+            clearInterval(inte);
+        }
+        inte = setInterval(() => {
+            let vdo = document.getElementById("video0");
+            if (vdo.buffered.length) {
+                let end = vdo.buffered.end(0);//获取当前buffered值
+                let diff = end - vdo.currentTime;//获取buffered与currentTime的差值
+                if (diff >= 0.5) {//如果差值大于等于0.5 手动跳帧 这里可根据自身需求来定
+                    vdo.currentTime = vdo.buffered.end(0);//手动跳帧
+                }
+            }
+        }, 1000); //2000毫秒执行一次
+    }
+
+</script>
+
+</body>
+</html>

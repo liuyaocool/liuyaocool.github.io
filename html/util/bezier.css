@@ -1,0 +1,260 @@
+
+* {
+    margin: 0;
+}
+
+body {
+    font-family: 'Hiragino Kaku Gothic Pro', 'Segoe UI', 'Apple Gothic', Tahoma, 'Helvetica Neue', sans-serif;
+    line-height: 1.4;
+}
+
+.button {
+    padding: 5px 10px;
+    border: 0;
+    background: green;
+    color: white;
+    font-size: 50%;
+    text-transform: uppercase;
+    vertical-align: .25em;
+    cursor: pointer;
+    border-radius: .3em;
+}
+
+.button:hover {
+    background: #f08;
+}
+
+.button:focus {
+    box-shadow: 0 0 5px 2px yellow;
+}
+
+#importexport {
+    position: fixed;
+    top: 2em;
+    left: 50%;
+    z-index: 2;
+    width: 500px;
+    padding: 1em 2.6em 1em 1em;
+    margin-left: -250px;
+    background: rgba(0, 0, 0, .7);
+    color: white;
+    text-align: center;
+    border-radius: .8em;
+}
+
+#importexport > textarea {
+    display: block;
+    width: 100%;
+    height: 20em;
+    padding: .8em;
+    border: 1px solid black;
+    margin: .5em 0;
+    background: rgba(255, 255, 255, .85);
+    font-size: inherit;
+    text-shadow: 0 1px white;
+    border-radius: .3em;
+    box-shadow: .1em .1em .4em rgba(0, 0, 0, .5) inset;
+}
+
+#importexport > button {
+    font-size: 120%;
+}
+
+#importexport > button:not(:hover) {
+    background: black;
+}
+
+.lib-svg {
+    width: 100px;
+    margin-bottom: 20px;
+    /*border-color: var(--darkreader-text--gray-lighten-color);*/
+    border-style: solid;
+    border-width: 0 0 1px 1px;
+    /*color: var(--darkreader-text--gray-lighten-color);*/
+    fill: none;
+    /*stroke: var(--brand-color);*/
+    stroke: #56fff9;
+    stroke-width: 1px;
+    stroke-linecap: round;
+    overflow: visible;
+    display: block;
+    user-select: none;
+    opacity: 1;
+    visibility: visible;
+    background-color: #2c3032bf;
+}
+
+:root {
+    --color-1: #f08;
+    --color-2: #0de2f7;
+    --color-p1: #fff100;
+    --color-p2: #38ff07;
+}
+#app {
+    height: 100%;
+}
+
+bz1 {
+    color: var(--color-1);
+    width: 388px;
+    display: inline-block;
+}
+bz2 {color: var(--color-2);}
+po1 {color: var(--color-p1);}
+po2 {color: var(--color-p2);}
+
+.control-point {
+    position: absolute;
+    z-index: 1;
+    height: 20px;
+    width: 20px;
+    border: 1px solid rgba(0, 0, 0, .3);
+    margin: -10px 0 0 -10px;
+    outline: none;
+    box-sizing: border-box;
+    border-radius: 10px;
+    cursor: pointer;
+}
+#editP1 { background: var(--color-p1); }
+#editP2 { background: var(--color-p2); }
+
+code, .code {
+    font-family: Consolas, 'Andale Mono', monospace;
+}
+
+.header {
+    position: fixed;
+    top: 10px;
+    left: 16px;
+    right: 16px;
+    font-weight: bold;
+    z-index: 1;
+    background-color: #c4d01142;
+    padding: 2px 10px;
+    border-radius: 5px;
+}
+
+#app > div {
+    display: inline-block;
+    float: left;
+    margin-top: 36px;
+    position: relative;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    background: #eee;
+    text-align: center;
+    font: inherit;
+    border-radius: 99px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, .5) inset;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background: #f8b;
+    height: 13px;
+    width: 13px;
+    border-radius: 50%;
+    box-shadow: -1px -1px 5px rgba(0, 0, 0, .5) inset,
+    -1px -1px 4px 3px #f08 inset,
+    1px 1px 3px rgba(0, 0, 0, .3),
+    -199px 0 0 198px rgba(255, 0, 136, .2);
+}
+
+input[type="range"]:in-range {
+    width: 14em;
+}
+
+.right {
+    width: calc(100% - 370px);
+}
+
+.current {
+    background-color: var(--color-1);
+}
+.compare {
+    background-color: var(--color-2);
+}
+.current, .compare {
+    border-radius: 5px;
+    margin-top: 5px;
+    display: block;
+}
+.current path, .compare path {
+    stroke: white;
+    stroke-width: 3px;
+    fill: none;
+}
+.moved {
+    margin-left: calc(100% - 60px);
+}
+.lib {
+    display: inline-block;
+    text-align: center;
+    margin: 5px;
+    position: relative;
+    font-weight: bold;
+    opacity: 0.9;
+}
+.lib > p {
+    font-size: 12px;
+}
+.lib > svg {
+    background-color: gray;
+    border-radius: 5px;
+    transition-duration: 1s;
+}
+.lib > svg > path {
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+}
+
+.lib > button {
+     display: none;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    box-shadow: 1px 1px 8px -1px black;
+    padding: 7px;
+    line-height: 11px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 30px;
+    border: 0;
+}
+
+.lib:hover > button {
+    display: block;
+}
+
+.lib > button:hover {
+    background: #f08;
+}
+
+.lib:hover > svg {
+    background-color: #ACD0D5;
+}
+.lib:hover > p {
+    color: #568C93;
+}
+
+.lib-sel {
+    color: var(--color-2);
+}
+
+.lib-sel > svg{
+    background-color: var(--color-2) !important;
+}
+
+.lib-sel > svg > path {
+    stroke: white;
+}
+
+a{
+    color: white;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>💐 Colorful Gradient Flex Buttons 💐</title>
+    <style>
+        * {
+            font-family: "Dosis", sans-serif;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            height: 97vh;
+        }
+
+        .container h1 {
+            background: linear-gradient(to right, #FEC163 0%, #DE4313 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container .button {
+            transition: all .3s ease-in-out;
+        }
+
+        .container .button:nth-child(2) {
+            width: 150px;
+            height: 60px;
+            border-radius: 50px;
+            background-image: linear-gradient(135deg, #E2B0FF 0%, #9F44D3 100%);
+            box-shadow: 0 20px 30px -6px rgba(171, 88, 219, 0.5);
+            outline: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+
+        .container .button:nth-child(3) {
+            width: 150px;
+            height: 60px;
+            border-radius: 50px;
+            background-image: linear-gradient(135deg, #81FBB8 0%, #28C76F 100%);
+            box-shadow: 0 20px 30px -6px rgba(60, 211, 128, 0.5);
+            outline: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+
+        .container .button:nth-child(4) {
+            width: 150px;
+            height: 60px;
+            border-radius: 50px;
+            background-image: linear-gradient(135deg, #ABDCFF 0%, #0396FF 100%);
+            box-shadow: 0 20px 30px -6px rgba(30, 161, 255, 0.5);
+            outline: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+
+        .container .button:nth-child(5) {
+            width: 150px;
+            height: 60px;
+            border-radius: 50px;
+            background-image: linear-gradient(135deg, #FEB692 0%, #EA5455 100%);
+            box-shadow: 0 20px 30px -6px rgba(238, 103, 97, 0.5);
+            outline: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+
+        .container .button:hover {
+            -webkit-transform: translatey(10px);
+            transform: translatey(10px);
+            box-shadow: none;
+        }
+
+        .container .button:active {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+<div class="container"><h1>Sweet Buttons</h1>
+    <button class="button">Hello</button>
+    <button class="button">Hello</button>
+    <button class="button">Hello</button>
+    <button class="button">Hello</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>✿ bezier ✿</title>
+    <link rel="stylesheet" href="../../css/theme.css"/>
+    <link rel="stylesheet" href="bezier.css">
+</head>
+<body>
+<div id="app">
+    <code class="header">
+        <bz1>
+            cubic-bezier(<po1>{{coor[0]}}</po1>, <po1>{{coor[1]}}</po1>,
+            <po2>{{coor[2]}}</po2>, <po2>{{coor[3]}}</po2>)
+        </bz1>
+        VS &nbsp;&nbsp;
+        <bz2>
+            cubic-bezier(<po1>{{cmp_coor[0]}}</po1>, <po1>{{cmp_coor[1]}}</po1>,
+            <po2>{{cmp_coor[2]}}</po2>, <po2>{{cmp_coor[3]}}</po2>)
+        </bz2>
+        <a href="javascript:window.open('https://cubic-bezier.com')">原站</a>
+        &nbsp;<a href="javascript:window.open('https://easings.net/zh-cn')">相关1</a>
+        &nbsp;<a href="javascript:window.open('http://blog.luckly-mjw.cn/tool-show/tween-code-creator/index.html')">JS版</a>
+    </code>
+
+    <div style="position: relative;display: inline-block; margin: 100px 26px 26px 36px;">
+        <button class="control-point" id="editP1" :style="{left: `${svg.editP1[0]}px`, top: `${svg.editP1[1]}px`}"></button>
+        <button class="control-point" id="editP2" :style="{left: `${svg.editP2[0]}px`, top: `${svg.editP2[1]}px`}"></button>
+        <svg :width="svg.editWidth" :height="svg.editHeight">
+            <line v-for="(row, i) in svg.editLines" :style="row[4]"
+                  :x1="row[0]" :y1="row[1]" :x2="row[2]" :y2="row[3]"></line>
+            <line :x1="svg.editP1Fixed[0]" :y1="svg.editP1Fixed[1]" :x2="svg.editP1[0]"
+                  :y2="svg.editP1[1]" style="stroke: var(--color-p1); stroke-width: 1px;"></line>
+            <line :x1="svg.editP2Fixed[0]" :y1="svg.editP2Fixed[1]" :x2="svg.editP2[0]"
+                  :y2="svg.editP2[1]" style="stroke: var(--color-p2); stroke-width: 1px;"></line>
+            <path :d="svg.editPath" style="stroke: var(--color-1);fill: none;stroke-width: 3px;"></path>
+        </svg>
+    </div>
+
+    <div class="right">
+        <div style="margin: 10px 0;">
+            Duration:<input type="range" v-model="move.duration" min="0.1" max="10" step="0.1"/>
+            {{move.duration}}s <button class="button" @click="move_toggle()">Go!</button>
+        </div>
+        <svg :width="svg.movewidth" :height="svg.moveheight" :xmlns="svg.xmlns" :class="'current ' + move.class"
+             :style="{'transition-timing-function':move.current_func,'transition-duration':move.duration+'s'}">
+            <path :d="svg.movePath"></path>
+        </svg>
+        <svg :width="svg.movewidth" :height="svg.moveheight" :xmlns="svg.xmlns" :class="'compare ' + move.class"
+             :style="{'transition-timing-function':move.compare_func,'transition-duration':move.duration+'s'}">
+            <path :d="svg.comparePath"></path>
+        </svg>
+    </div>
+
+    <div class="right">
+        <h1 style="display: inline-block;">Library</h1>
+        <span class="button" onclick="saveLibrary()">Left to Library</span>
+        <span class="button" onclick="vm.panel.show='import';vm.panel.json=vm.panel.et">Import</span>
+        <p>Click to compare.</p>
+        <div>
+            <svg class="lib-svg" :xmlns="svg.xmlns" viewBox="0 0 125 85">
+                <path d="M1 84l.24-.06 1.24-.19 1.24-.32 1.24-.45 1.24-.57 1.24-.7 1.24-.82 1.24-.96 1.24-1.08 1.24-1.2 1.24-1.34 1.24-1.46 1.24-1.59 1.24-1.71 1.24-1.84 1.24-1.97 1.24-2.1 1.24-2.22 1.24-2.35 1.24-2.48 1.24-2.6 1.24-2.74 1.24-2.85 1.24-2.99L31 44.3l1.24-3.24 1.24-3.37 1.24-3.49 1.24-3.62 1.24-3.75 1.24-3.88 1.24-4 1.24-4.13 1.24-4.25 1.24-4.39 1.24-4.51 1.24-.23 1.24 2.17 1.24 2.04 1.24 1.91 1.24 1.78L52.08 11l1.24 1.53 1.24 1.41 1.24 1.27 1.24 1.15 1.24 1.02 1.24.9 1.24.77 1.24.64 1.24.51 1.24.39 1.24.26 1.24.13 1.24.01 1.24-.12 1.24-.25 1.24-.38 1.24-.5 1.24-.63 1.24-.76 1.24-.88 1.24-1.01 1.24-1.14 1.24-1.26 1.24-1.39 1.24-1.52 1.24-1.65 1.24-1.77 1.24-1.9 1.24-2.03 1.24-2.15L90.52.31l1.24 1.06L93 2.3l1.24.8 1.24.68 1.24.54 1.24.43 1.24.29 1.24.17 1.24.04 1.24-.09 1.24-.21 1.24-.34 1.24-.47 1.24-.6 1.24-.72 1.24-.85L111.6 1l1.24-.95 1.24.5 1.24.38 1.24.25 1.24.12 1.24-.01 1.24-.13 1.24-.26 1.24-.39"></path>
+            </svg>
+        </div>
+        <div>
+            <div v-for="(row, i) in library" :class="'lib ' + (libSelIdx == i ? 'lib-sel' : '')"
+                 @click="chooseLibrary(i)" :title="row[1]" :style="{'width': svg.libwidth+'px'}">
+                <svg :width="svg.libwidth" :height="svg.libheight" :xmlns="svg.xmlns"
+                     :style="{'transition-timing-function': 'cubic-bezier(' + row[1] + ')'}">
+                    <path :d="row[2]"></path>
+                </svg>
+                <p>{{row[0]}}</p>
+                <button>×</button>
+            </div>
+        </div>
+    </div>
+
+    <form id="importexport" v-show="panel.show=='import'">
+        <textarea v-model="panel.json" class="code" placeholder='[["dd", ".95, -0.04, .85, 1.49"]]'></textarea>
+        <button class="button" onclick="importBezier();">Import</button>
+        <button class="button" onclick="vm.panel.show=''">Close</button>
+    </form>
+
+</div>
+
+<script src="../../js/vue3.global.js"></script>
+<script src="bezier.js"></script>
+
+</body>
+</html>

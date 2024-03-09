@@ -1,0 +1,96 @@
+<html>
+<head>
+    <title>WebRTC ScreenConnection</title>
+    <style>
+        textarea {
+            width: 500px;
+            height: 260px;
+        }
+
+        video {
+            width: 630px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <video id="mainVideo" autoplay playsinline controls></video>
+
+    <br><label>offer.type <input type="text" v-model="offer.type"></label>
+    <br><label>offer.sdp<textarea v-model="offer.sdp"></textarea></label>
+    <br><button onclick="connServer()">con server</button>
+
+    <br><label>answer.type <input type="text" v-model="answer.type"></label>
+    <br><label>answer.sdp<textarea v-model="answer.sdp"></textarea></label>
+
+    <label v-for="(val,key,i) in candidate"><br>candidate.{{key}}: <input style="width: 700px" type="text" v-model="val"></label>
+
+    <br>state: <input type="text" v-model="state">
+
+</div>
+
+<script src="../../js/vue3.global.js"></script>
+<!--<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>-->
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                candidate: {
+                    candidate: '',
+                    sdpMid: '',
+                    sdpMLineIndex: 0
+                },
+                offer: {
+                    type: 'offer',
+                    sdp: ''
+                },
+                answer: {
+                    type: 'offer',
+                    sdp: ''
+                },
+                state: null
+            }
+        },
+        created() {},
+        methods: {},
+    }).mount("#app");
+
+    let pc = new RTCPeerConnection({
+        // "iceServers": [{"url": "stun:stun.1.google.com:19302"}]
+        // "iceServers": [{"url": "stun:127.0.0.1:3478"}],
+    });
+
+    // pc.addEventListener("icecandidate", event => {
+    //     app.candidate = event.candidate
+    // });
+    pc.addEventListener("iceconnectionstatechange", (event) => {
+        app.state = pc.iceConnectionState;
+    });
+    pc.onicecandidate = (e) =>{
+        // if (e.candidate) app.candidate = e.candidate.toJSON();
+        if (e.candidate) console.log(e.candidate);
+    }
+    pc.ontrack = (e)=>{
+        document.getElementById('mainVideo').srcObject = e.streams[0];
+    }
+
+    function connServer() {
+        pc.setRemoteDescription(app.offer);
+        pc.addIceCandidate(app.candidate);
+
+        pc.createAnswer().then(event => {
+            pc.setLocalDescription(event);
+            app.answer.type = event.type;
+            app.answer.sdp = event.sdp;
+        });
+    }
+
+    if(location.hash) {
+        let param = JSON.parse(decodeURIComponent(location.hash.substring(1)));
+        app.offer = param.offer;
+        app.candidate = param.candidate;
+    }
+
+</script>
+</body>
+</html>
