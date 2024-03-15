@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>analyse QR Code</title>
+    <link rel="stylesheet" href="../../css/theme.css"/>
+
+    <style>
+        body, html{
+            padding: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        body {
+            text-align: center;
+        }
+
+        body *{
+            font-weight: bold;
+        }
+
+        textarea {
+            min-width: 90%;
+            max-width: 90%;
+            min-height: 16vh;
+            line-height: 3vh;
+            font-size: 2vh;
+        }
+
+        button {
+            font-size: 3vh;
+            margin: 2vh;
+            border-width: 0.5vh;
+        }
+
+        #qrcode {
+            width: 310px;
+            height: 310px;
+            margin-left: calc(50% - 155px);
+        }
+        
+        #qrcode canvas {
+            display: none;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div style="height: 30px;"></div>
+    <div style="border: white 1px solid; padding: 5px 10px; display: inline-block;background-color: gray;">
+        <img id="uploadPic" src="" style="width: 300px;">
+    </div>
+    <button type="button" onclick="analyzeChoose()">Analyze</button>
+    <br/>
+    <textarea id="result" placeholder="the analyzed results are shown here (suport clipboard)"></textarea>
+
+    <br/><br/><hr/><br/>
+
+    <textarea id="url" placeholder="input string here"></textarea>
+    <br>
+    <button type="button" onclick="generate()">Generate</button>
+    <br>
+    <div id="qrcode"></div>
+    <img id="qrcodeimg" src="" style="width: 300px;">
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/base.js"></script>
+
+    <script src="../../js/qrcode/en/qrcode.min.js"></script>
+
+    <script src="../../js/qrcode/delib1/jimp.js"></script>
+    <script src="../../js/qrcode/delib1/jsQR.js"></script>
+
+    <script src="../../js/qrcode/delib2/oepncv.js"></script>
+    <script src="../../js/qrcode/delib2/cli-qrcode.js"></script>
+    <script src="../../js/qrcode/delib2/qr-cli.js"></script>
+
+    <script src="main.js"></script>
+
+</body>
+</html>

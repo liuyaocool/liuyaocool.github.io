@@ -94,7 +94,7 @@
         methods: {
             createClientUrl(idx) {
                 let paths = location.pathname.split("/");
-                paths[paths.length-1] = "client.html";
+                paths[paths.length-1] = "screen_client.html";
                 let param = JSON.stringify({offer: app.offer, candidate: app.candidates[idx]});
                 param = encodeURIComponent(param);
                 return `${location.origin}${paths.join('/')}#${param}`;
