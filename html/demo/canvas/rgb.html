@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>canvas像素点</title>
+    <style>
+        html, body{
+            width: 1920px;
+            height: 1080px;
+            margin: 0px;
+            font-size: 12px;
+        }
+        body{background: rgba(255,255,255);}
+    </style>
+</head>
+
+<body>
+<canvas id="canvas" width="1920" height="1080">此处为画布内容，浏览器不支持H5画布！</canvas>
+<script type="text/javascript">
+
+    draw()
+
+    function text(){
+        var len = 1920*1080/12/12/12;
+        for (var i = 0; i < len; i++) {
+            document.getElementsByTagName('body')[0].innerText += "这是一句话这是一句话";
+        }
+    }
+
+    // l:边长几个像素；cl:r、g、b步长
+    function draw(l, cl){
+        l = l ? l : 8, cl = cl ? cl : 9;
+        var myCan = document.getElementById("canvas");
+        var width = myCan.width;
+        var height = myCan.height;
+        var ctx = myCan.getContext("2d");
+
+        var imgData = ctx.createImageData(myCan.width, myCan.height);
+        var r = 0, g = 0, b = 0;
+        var idx, loc;//临时
+        for (var h = 8; h < height; h+=l) {
+            for (var w = 8; w < width; w+=l) {
+                loc = w + h * width;//小方框左上角像素位置
+                if (w + l > width) { continue; }
+                //实心正方形
+                for (var y = 0; y < l; y++) {//竖着
+                    for (var x = 0; x < l; x++) {//横着
+                        imgData.data[idx = (loc+x+y*width)*4] = r;
+                        imgData.data[++idx] = g;
+                        imgData.data[++idx] = b;
+                        imgData.data[++idx] = 256;
+                    }
+                }
+                // console.log(`r:${r} g:${g} b:${b}`);
+                //rgb 256进制计算
+                b += cl;
+                if (b > 255) {
+                    b = 0;
+                    g += cl;
+                }
+                if (g > 255) {
+                    g = 0;
+                    r += cl;
+                }
+                if (r > 255) {
+                    h = height
+                    w = width
+                }
+                w++;//空行-竖
+            }
+            h++;//空行-横
+        }
+        console.log(`r:${r} g:${g} b:${b}`);
+        ctx.putImageData(imgData, 0, 0);
+    }
+
+</script>
+</body>
+
+</html>
