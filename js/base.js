@@ -91,18 +91,3 @@ function loadRemoteBody(htmlUrl) {
     let doc = new DOMParser().parseFromString(xhr.responseText, 'text/html');
     document.body.innerHTML = doc.body.innerHTML;
 }
-
-function fsSupportMimeType(suffix) {
-    switch (suffix || '') {
-        case 'png':
-        case 'jpeg':
-        case 'jpg':
-        case 'gif': return "image";
-        case 'mp4': return "video";
-        case 'txt':
-        case 'properties':
-        case 'conf':
-        case 'log': return "text";
-        default: return '';
-    }
-}
