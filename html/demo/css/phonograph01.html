@@ -1,0 +1,555 @@
+
+<style>
+    :root {
+	--bs1: #4d4d4d;
+	--bs2: #3d3d3d;
+	--arm: #dedede;
+	--bg2: #ffc000;
+	--bg4: #00b91f;
+	--bg1: #a27dc2;
+	--bg3: #2a92bf;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background:
+		radial-gradient(circle at 50% 50%, #fff0, #000c),
+		radial-gradient(farthest-side at bottom left, var(--bg1), #fff0), 
+		radial-gradient(farthest-side at top left, var(--bg2), #fff0), 
+		radial-gradient(farthest-corner at bottom right, var(--bg3), #fff0), 
+		radial-gradient(farthest-corner at top right, var(--bg4), #fff0);
+}
+
+.content {
+	width: 80vmin;
+	height: 60vmin;
+	background-size: cover;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.content * {
+	position: absolute;
+}
+
+.turntable {
+	width: 61%;
+	height: 49.5%;
+	background: var(--bs1);
+	transform: rotate(-30deg) skewX(30deg);
+	margin-top: 4%;
+	border-radius: 5%;
+	box-shadow: 
+		-0.5vmin 0.5vmin 0 0 var(--bs2), 
+		-1vmin 0.9vmin 0 0 var(--bs2), 
+		-1.5vmin 1.35vmin 0 0 var(--bs2), 
+		-2vmin 1.8vmin 0 0 var(--bs2), 
+		-4.75vmin 4vmin 0.25vmin 0 #0004;
+}
+
+.turntable:before {
+	content: "";
+	background: var(--bs2);
+	width: 17%;
+	height: 24%;
+	position: absolute;
+	left: 78%;
+	top: 4%;
+	border-radius: 100%;
+	box-shadow: -0.1vmin 0.1vmin 0.25vmin 0 #000 inset;
+}
+
+.legs {
+	width: 100%;
+	height: 100%;
+}
+
+.legs span {
+	top: 64.5%;
+	left: 8.25%;
+	background: linear-gradient(90deg, #242423 35%, #333333 35%);
+	width: 6.5%;
+	height: 4%;
+	border-radius: 0 0 100% 100%;
+}
+
+.legs span + span {
+	top: 87.75%;
+	left: 39.25%;
+}
+
+.legs span + span + span {
+	top: 52.35%;
+	left: 85.25%;
+}
+
+.wheel {
+	background: linear-gradient(90deg, #242423 35%, #333333 35%);
+	width: 6.5%;
+	height: 4%;
+	border-radius: 0 0 100% 100%;
+	top: 77.75%;
+	left: 39%;
+}
+
+.wheel:before {
+	content: "";
+	background: var(--bs2);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border-radius: 100%;
+	top: -50%;
+}
+
+.buttons {
+	background: #ffffff00;
+	width: 25%;
+	height: 21%;
+	left: 63%;
+	top: 30%;
+}
+
+.buttons span {
+	top: 8%;
+	left: 3.5%;
+	background: linear-gradient(90deg, #242423 35%, #333333 35%);
+	width: 9%;
+	height: 9%;
+	border-radius: 0 0 100% 100%;
+}
+
+.buttons span:before {
+	content: "";
+	background: var(--bs2);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border-radius: 100%;
+	top: -50%;
+}
+
+.buttons span + span {
+	top: 23%;
+	left: 19%;
+}
+
+.buttons span + span + span {
+	top: 42%;
+	left: 36%;
+	width: 15%;
+}
+
+.buttons span + span + span + span {
+	top: 60%;
+	left: 56%;
+}
+
+.buttons span + span + span + span + span {
+	--bs2: #999;
+	top: 81%;
+	left: 75%;
+	width: 20%;
+	height: 12%;
+}
+
+.buttons span:after {
+	content: "TREBLE";
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border-radius: 100%;
+	transform: rotateY(-5deg) rotateX(-50deg) rotateZ(-39deg);
+	font-size: 0.75vmin;
+	top: 105%;
+	left: 50%;
+	font-family: Arial, Helvetica, serif;
+}
+
+.buttons span + span:after {
+	content: "BASS";
+	left: 80%;
+	top: 80%;
+}
+
+.buttons span + span + span:after {
+	content: "FFW";
+	top: 60%;
+	left: 75%;
+}
+
+.buttons span + span + span + span:after {
+	content: "RW";
+	left: 85%;
+	top: 55%;
+}
+
+.buttons span + span + span + span + span:after {
+	content: "PLAY/PAUSE";
+	left: 50%;
+	top: 90%;
+	color: var(--bs2)
+}
+
+.towers {
+	width: 9%;
+	height: 9%;
+	margin-top: -38%;
+	margin-left: 13.5%;
+	background: linear-gradient(180deg, #fff0 0 1.95vmin, var(--bs1) 0 2.3vmin, var(--bs2) 0 2.5vmin, #fff0 0 100%);
+	background-repeat: no-repeat;
+	background-size: 80% 100%;
+	background-position: 50% 0;
+}
+
+.towers span {
+	background: 
+		radial-gradient(circle at 50% -15%, #fff0 33%, #333 calc(33% + 1px) 75%, #fff0 0  100%), 
+		radial-gradient(circle at 50% 73%, #333 0 33%, #fff0 calc(33% + 1px) 100%);
+	width: 30%;
+	height: 95%;
+	left: 2%;
+	bottom: 2%;
+	filter: drop-shadow(-2px -2px 1px #0006);
+}
+
+.towers span:before {
+	content: "";
+	position: absolute;
+	width: 98%;
+	height: 30%;
+	background: var(--bs2);
+	border-radius: 100%;
+}
+
+.towers span:after {
+	content: "";
+	position: absolute;
+	width: 33%;
+	height: 80%;
+	background: #242424;
+	z-index: -1;
+	bottom: 2%;
+	border-radius: 0 0 0.05vmin 1vmin;
+}
+
+.towers span + span {
+	left: 66%;
+}
+
+@keyframes playing {
+	50% { transform: rotate(0.35deg);}   
+}
+
+.group {
+	width: 8%;
+	height: 38%;
+	margin-top: -25%;
+	margin-left: 13.5%;
+	transform-origin: 50% 20%;
+	transform: rotate(0deg);
+	transition: all 0.5s ease 0s;
+	filter: drop-shadow(-3px 8px 4px #0006);
+	animation: playing 0.5s ease 0s infinite;
+}
+
+.circle {
+	width: 94%;
+	height: 25%;
+	background: 
+		radial-gradient(circle at 49% 61%, var(--bs2) 0 19%, #fff0 calc(20% + 1px) 100%), 
+		radial-gradient(circle at 50% 87%, #fff 0 65%, #999999 calc(65% + 1px) 100%);
+	top: 3%;
+	left: 3%;
+	border-radius: 90% 90% 100% 100%;
+}
+
+.circle:before {
+	content: "";
+	position: absolute;
+	background: radial-gradient(circle at 50% 900%, #fff0 0 90%, var(--bs2) calc(90% + 1px) 100%);
+	width: 27%;
+	height: 9%;
+	border-radius: 5vmin 5vmin 0 0;
+	left: 35%;
+	margin-top: -4%;
+}
+
+.arm {
+	width: 3vmin;
+	height: 8vmin;
+	left: 42%;
+	top: 17%;
+	border-radius: 5% 5% 0% 100%;
+	border: 0.9vmin solid #ff000000;
+	border-left-color: var(--arm);
+	border-top-width: 0;
+	border-bottom-color: var(--arm);
+	border-right-width: 0;
+}
+
+.arm + .arm {
+	transform: rotateY(180deg) rotateX(180deg);
+	transform-origin: calc(100% - 1px) calc(100% - 0.35vmin);
+}
+
+.arm:before {
+	content: "";
+	position: absolute;
+	background: radial-gradient(circle at 50% 83%, #fff0 0 0.5vmin, var(--bs2) calc(0.5vmin + 1px) 100%);
+	width: 1.25vmin;
+	height: 1vmin;
+	left: -1vmin;
+	top: -0.2vmin;
+}
+
+.arm + .arm:before  {
+	display: none;
+}
+
+.head {
+	background: 
+		repeating-conic-gradient(from 0deg at 80% 20%, var(--arm) 0 25%, #fff0 0 100%), 
+		repeating-conic-gradient(from 0deg at 60% 20%, var(--arm) 0 25%, #fff0 0 100%);
+	width: 32%;
+	height: 15%;
+	bottom: -1%;
+	left: 8.7vmin;
+	border-radius: 0.25vmin;
+	background-size: 2vmin 1.15vmin, 0.85vmin 1.25vmin;
+	background-position: 3.2vmin 5vmin, 0.75vmin 1vmin;
+	background-color: var(--bs2);
+}
+
+.head:before {
+	content: "";
+	position: absolute;
+	width: 100%;
+	height: 0.25vmin;
+	background: var(--bs2);
+	top: 0.5vmin;
+	right: calc(-100% - 1px);
+	border-bottom: 0.3vmin solid #6b6b6b;
+	border-right: 0.2vmin solid #6b6b6b;
+	border-radius: 0 0.15vmin 0.2vmin 0;
+}
+
+.head:after {
+	content: "";
+	position: absolute;
+	background: 
+		linear-gradient(180deg, #fff0 0 0.01vmin, var(--bs1) 0 0.3vmin, #fff0 0 100%), 
+		linear-gradient(0deg, #fff0 0 0.01vmin, var(--bs1) 0 0.3vmin, #fff0 0 100%), 
+		linear-gradient(70deg, #fff0 0 0.15vmin, var(--bs1) 0 0.45vmin, #fff0 0 100%), 
+		linear-gradient(-70deg, #fff0 0 0.15vmin, var(--bs1) 0 0.45vmin, #fff0 0 100%), 
+		conic-gradient(from -20deg at 50% 350%, #000 0 40deg, #fff0 0 100%);
+	width: 99%;
+	height: 25%;
+	bottom: -20%;
+	left: 0%;
+	border-radius: 0.05vmin 0.05vmin 0.5vmin 0.5vmin;
+	transform-origin: 50% 0;
+	transform: rotateX(45deg);
+}
+
+.disc {
+	background: linear-gradient(-80deg, #747474 24%, #818181 25%);
+	width: 39vmin;
+	height: 45.5vmin;
+	border-radius: 100%;
+	transform: rotateX(59deg) rotateY(0deg);
+	left: 16.25vmin;
+	top: 10vmin;
+	border: 0.5vmin solid var(--bs2);
+	border-top-width: 0;
+}
+
+.vinyl {
+	background: 
+		radial-gradient(circle at 50% 50%, #f6b31a 5vmin, #e58c00 5.5vmin, #ffb100 5.85vmin, #fff0 calc(6vmin + 1px) 100%), 
+		repeating-radial-gradient(#222 0 0.1vmin, #111 calc(0.1vmin + 3px) 0.3vmin, #fff0 0 calc(0.3vmin + 1px));
+	width: 36vmin;
+	height: 41vmin;
+	border-radius: 100%;
+	transform: rotateX(59deg) rotateY(0deg);
+	left: 18vmin;
+	top: 11vmin;
+	border: 0.25vmin solid #0c0c0c;
+}
+
+.vinyl:before {
+	content: "";
+	left: 17.4vmin;
+	background: var(--bs1);
+	width: 1.2vmin;
+	height: 1.5vmin;
+	position: absolute;
+	border-radius: 100%;
+	top: 18.35vmin;
+	z-index: 2;
+}
+
+.vinyl:after {
+	content: "";
+	position: absolute;
+	top: calc(50% - 1.25vmin);
+	left: calc(50% - 0.65vmin);
+	background: linear-gradient(90deg, #242423 35%, #333333 35%);
+	width: 1.25vmin;
+	height: 1.5vmin;
+	border-radius: 0 0 100% 100%;
+}
+
+.name:before, .name:after {
+	content: "DEEP PURPLE \A \2234 \2235 \2234 \2235 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \00a0 \25a6 \2592 \25a6 \A MADE IN JAPAN";
+	background: #f000;
+	width: 8vmin;
+	height: 12vmin;
+	position: absolute;
+	text-align: center;
+	font-family: Arial, Helvetica, serif;
+	font-size: 0.7vmin;
+	font-weight: bold;
+	transform: rotateX(60deg) rotate(0deg);
+	left: -8vmin;
+	top: -4.5vmin;
+	line-height: 3vmin;
+	animation: naming 3s linear 0s infinite;
+	white-space: pre-wrap;
+	padding-top: 0vmin;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@keyframes naming {
+	100% { transform: rotateX(60deg) rotate(360deg); }    
+}
+
+.name:after {
+	content: "";
+	background: repeating-conic-gradient(#fff0 0 15%, #fff2 30%, #fff0 45%), radial-gradient(#fff0 1vmin, #000c);
+	width: 36vmin;
+	height: 36vmin;
+	left: -21.75vmin;
+	top: -16.15vmin;
+	border-radius: 100%;
+	transform: rotateX(60deg) rotate(0deg);
+	filter: blur(1vmin);
+	animation: shining 1s ease 0s infinite;
+}
+
+@keyframes shining {
+	50% { transform: rotateX(60deg) rotate(3deg); }    
+}
+
+.music {
+	width: 25vmin;
+	height: 19vmin;
+	background: #f000;
+	position: absolute;
+	z-index: 3;
+	left: 25vmin;
+	top: 0;
+	overflow: hidden;
+	transform: scale(1.75);
+}
+
+.music span:before {
+	content: "\266A";
+	filter: contrast(5);
+	font-size: 3vmin;
+}
+
+.music span {
+	bottom: 0;
+	right: 3vmin;
+	color: #0087ff;
+	animation: 
+		music-notes 2s cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s infinite,
+		music-notes-dance 1s ease-in-out 0s infinite alternate;
+	;
+
+}
+
+
+.music span:nth-child(2):before,
+.music span:nth-child(5):before{
+	content: "\266B";
+}
+
+.music span:nth-child(3):before,
+.music span:nth-child(6):before {
+	content: "\266C";
+}
+
+
+.music span:nth-child(2) {
+	right: 6vmin;
+	animation-delay: -1.66s;
+}
+.music span:nth-child(3) {
+	right: 9vmin;
+	animation-delay: -8.33s;
+}
+.music span:nth-child(4) {
+	right: 13vmin;
+	animation-delay: -5s;
+}
+.music span:nth-child(5) {
+	right: 16vmin;
+	animation-delay: -3.33s;
+}
+.music span:nth-child(6) {
+	right: 19vmin;
+	animation-delay: -6.66s;
+}
+
+
+@keyframes music-notes {
+	0% { bottom: 0; opacity: 0; filter: hue-rotate(0deg) brightness(0); }
+	20% { filter: hue-rotate(0deg) brightness(0); }
+	50% {opacity: 1; }
+	100% { bottom: 80%; opacity:0; filter: hue-rotate(330deg) brightness(2); }
+}
+
+@keyframes music-notes-dance {
+	0% { transform: translateX(-1vmin); }
+	100% { transform: translateX(-3vmin); }
+}
+</style>
+
+<div class="content">
+	<div class="music">
+		<span></span><span></span><span></span><span></span><span></span><span></span>
+	</div>
+	<div class="legs">
+		<span></span><span></span><span></span>
+	</div>
+	<div class="turntable"></div>
+	<div class="disc"></div>
+	<div class="vinyl"></div>
+	<div class="name"></div>
+	<div class="wheel"></div>
+	<div class="buttons">
+		<span></span><span></span><span></span><span></span><span></span>
+	</div>
+	<div class="group">
+		<div class="circle"></div>
+		<div class="arm"></div>
+		<div class="arm"></div>
+		<div class="head"></div>
+	</div>
+	<div class="towers">
+		<span></span><span></span>
+	</div>
+</div>
