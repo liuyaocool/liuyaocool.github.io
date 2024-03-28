@@ -1,0 +1,433 @@
+<style>
+    ::-webkit-scrollbar {
+  width: 0.625rem;
+  height: 0.625rem;
+}
+::-webkit-scrollbar-thumb {
+  background: #111;
+  border-radius: 0.3125rem;
+  box-shadow: inset 0.125rem 0.125rem 0.125rem rgba(255, 255, 255, 0.25),
+    inset -0.125rem -0.125rem 0.125rem rgba(0, 0, 0, 0.25);
+  cursor: default;
+}
+::-webkit-scrollbar-track {
+  background: #333;
+}
+html, body {
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+}
+body {
+  display: grid;
+  grid-template-rows: calc(100dvh - 4rem) 4rem;
+  font-family: system-ui, sans-serif;
+}
+canvas, .editor {
+  grid-row: 1;
+  grid-column: 1;
+}
+canvas {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: black;
+  touch-action: none;
+}
+.editor, .overlay, #error {
+  background: #1116;
+  padding: 1em;
+}
+.editor {
+  color: #fefefe;
+  tab-size: 2;
+  border: none;
+  resize: none;
+}
+.editor:focus {
+  outline: none;
+}
+#error {
+  grid-row: 2;
+  grid-column: 1;
+  min-height: 4rem;
+  padding-block: 0;
+  color: firebrick;
+  overflow: auto;
+}
+#indicator {
+  visibility: hidden;
+  position: absolute;
+  top: calc(var(--top, 0px) - var(--scroll-top, 0px));
+  width: 0; 
+  height: 0; 
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid firebrick;
+  transform: translateY(-25%);
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+}
+.editor, .overlay {
+  font-size: 1rem;
+  line-height: 1.2;
+  white-space: pre;
+}
+#controls {
+  display: flex;
+  gap: .25em;
+  position: fixed;
+  top: 1em;
+  right: 1em;
+}
+.hidden {
+  display: none;
+}
+input {
+  all: unset;
+  width: 3rem;
+  height: 2rem;
+  opacity: .2;
+  filter: saturate(0) invert(1);
+  cursor: pointer;
+  transition: opacity 500ms ease-in-out;
+  text-align: center;
+  vertical-align: middle;
+}
+input:hover {
+  opacity: 1;
+}
+#btnToggleView::after {
+  content: '👁';
+}
+#btnToggleView:checked::after {
+  content: '✏️';
+}
+#btnToggleResolution::after {
+  content: '1️⃣';
+}
+#btnToggleResolution:checked::after {
+  content: '2️⃣';
+}
+#btnReset::after {
+  content: '⏮️';
+}
+</style>
+
+<canvas id="canvas"></canvas>
+<textarea id="codeEditor" class="editor" autocapitalize="false" spellcheck="false" oninput="render()"></textarea>
+<pre id="error"></pre>
+<div id="indicator"></div>
+<div id="controls">
+  <input id="btnToggleView" type="checkbox" name="toggleView" onclick="toggleView()">
+  <input id="btnToggleResolution" type="checkbox" name="toggleResolution" onchange="toggleResolution()">
+  <input id="btnReset" type="checkbox" name="reset" onclick="reset()">
+</div>
+<script type="x-shader/x-vertex" id="vertexShader">#version 300 es
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+
+in vec4 position;
+
+void main(void) {
+    gl_Position = position;
+}
+  </script>
+<script type="x-shader/x-fragment" id="fragmentShader">#version 300 es
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+out vec4 O;
+uniform float time;
+uniform vec2 resolution;
+uniform vec2 touch;
+uniform int pointerCount;
+#define mouse (touch/R)
+#define FC gl_FragCoord.xy
+#define R resolution
+#define T time
+#define P pointerCount
+#define S smoothstep
+#define N normalize
+#define rot(a) mat2(cos(a-vec4(0,11,33,0)))
+#define hue(a) (.6+.6*cos(6.3*(a)+vec3(0,23,21)))
+#define mapto(x,a,b,c,d) (((x)-(a))/((b)-(a))*((d)-(c))+(c))
+float map(vec3 p);
+float smin(float a,float b,float k) { float h=clamp(.5+.5*(b-a)/k,.0,1.); return mix(b,a,h)-k*h*(1.-h); }
+float tor(vec3 p, vec2 s) { vec2 c=vec2(length(p.xz)-s.x,p.y); return length(c)-s.y; }
+vec3 norm(vec3 p) { float h=1e-3;vec2 k=vec2(-1,1); return N(k.xyy*map(p+k.xyy*h)+k.yxy*map(p+k.yxy*h)+k.yyx*map(p+k.yyx*h)+k.xxx*map(p+k.xxx*h)); }
+void cam(inout vec3 p) { if (P>0) { p.yz*=rot(-mouse.y*6.3+3.14); p.xz*=rot(3.14-mouse.x*6.3); } }
+float map(vec3 p) {
+  const float n=5.; // number of rings
+  float d=5e5, v=floor(n*.5);
+  for (float i=.0; i<n; i++) {
+    float k=i-v;
+    d=smin(d,tor(p-vec3(0,k*sin(T),0),vec2(3./n*abs(mapto(i,.0,n-1.,-v,v)),.2)),.75);
+  }
+  return d;
+}
+void main(void) {
+  vec2 uv = (FC-.5*R)/min(R.x,R.y);
+  vec3 col = vec3(0),
+  p=vec3(0,0,-6),
+  rd=N(vec3(uv,1));
+  cam(p);
+  cam(rd);
+  col=mix(col,hue(rd.y),rd.y*.5+.5); // background
+  const float steps=400., maxd=12.;
+  for (float i=.0; i<steps; i++) {
+    float d=map(p);
+    if (d<1e-3) {
+      vec3 n=norm(p),
+      r=reflect(rd,n);
+      col=hue(r.y*.3);
+      break;
+    }
+    if (d>maxd) break;
+    p+=rd*d;
+  }
+  O = vec4(col,1);
+}    
+  </script>
+
+
+  <script>
+    let editMode = true // set to false to hide the code editor on load
+let resolution = 1  // set to .5 to start with half resolution on load
+
+/*********
+ * made by Matthias Hurrle (@atzedent)
+ * 
+ * A simple fragment shader editor with live preview.
+ * Updates the shader code on every edit with a debounce time of 1 second.
+ * Supports high DPI displays.
+ * Shader errors are displayed in the editor and the line is highlighted.
+ * Supports tab indentation (for single line only and not with selections).
+ * Strores the shader code in local storage.
+ * Revert to the default shader code with the reset button in the top right corner (most right).
+ * Change the resolution with the button in the top right corner. 1 = 1x, 2 = 1/2x. 
+ * Toggle the code editor with the button in the top right corner.
+ * Default shader code is in the HTML.
+ */
+
+let gl
+
+function compile(shader, source) {
+  gl.shaderSource(shader, source)
+  gl.compileShader(shader)
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.error(gl.getShaderInfoLog(shader))
+    document.dispatchEvent(new CustomEvent('shader-error', { detail: gl.getShaderInfoLog(shader) }))
+  }
+}
+
+let program, vs, fs
+
+function deleteShader() {
+  gl.detachShader(program, vs)
+  gl.detachShader(program, fs)
+  gl.deleteShader(vs)
+  gl.deleteShader(fs)
+  gl.deleteProgram(program)
+}
+
+function setup() {
+  vs = gl.createShader(gl.VERTEX_SHADER)
+  fs = gl.createShader(gl.FRAGMENT_SHADER)
+
+  compile(vs, vertexShader.textContent)
+  compile(fs, codeEditor.value)
+
+  program = gl.createProgram()
+
+  gl.attachShader(program, vs)
+  gl.attachShader(program, fs)
+  gl.linkProgram(program)
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(program))
+  }
+}
+
+let vertices, buffer
+
+function init() {
+  vertices = [-1, 1, -1, -1, 1, 1, 1, -1,]
+
+  buffer = gl.createBuffer()
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
+
+  const position = gl.getAttribLocation(program, "position")
+
+  gl.enableVertexAttribArray(position)
+  gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0)
+
+  program.resolution = gl.getUniformLocation(program, "resolution")
+  program.time = gl.getUniformLocation(program, "time")
+  program.touch = gl.getUniformLocation(program, "touch")
+  program.pointerCount = gl.getUniformLocation(program, "pointerCount")
+}
+
+let dpr = Math.max(1, resolution * window.devicePixelRatio)
+
+const mouse = {
+  x: 0,
+  y: 0,
+  touches: new Set(),
+  update: function (x, y, pointerId) {
+    const editor = document.getElementById('codeEditor')
+    // prevent touch events from updating mouse position when editor is visible
+    if (!editor.classList.contains('hidden')) return
+    this.x = x * dpr
+    this.y = (innerHeight - y) * dpr
+    this.touches.add(pointerId)
+  },
+  remove: function (pointerId) { this.touches.delete(pointerId) }
+}
+
+let frm
+function loop(now) {
+  if (program) {
+    gl.clearColor(0, 0, 0, 1)
+    gl.clear(gl.COLOR_BUFFER_BIT)
+    gl.useProgram(program)
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+    gl.uniform2f(program.resolution, canvas.width, canvas.height)
+    gl.uniform1f(program.time, now * 1e-3)
+    gl.uniform2f(program.touch, mouse.x, mouse.y)
+    gl.uniform1i(program.pointerCount, mouse.touches.size)
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+  }
+  frm = requestAnimationFrame(loop)
+}
+
+function start() {
+  setup()
+  init()
+  resize()
+  loop(0)
+}
+
+const storagekey = `fragmentSource${btoa(window.location)}`
+
+function renderThis() {
+  console.log('rendering...')
+
+  error.innerHTML = ''
+  indicator.style.visibility = 'hidden'
+
+  error.blur()
+  localStorage.setItem(storagekey, codeEditor.value)
+
+  deleteShader()
+  cancelAnimationFrame(frm)
+
+  start()
+
+  return { timer: null }
+}
+
+function render() {
+  const delay = 1000 // 1 second default debounce time
+
+  if (renderThis.timer) {
+    clearTimeout(renderThis.timer)
+  }
+  renderThis.timer = setTimeout(renderThis, delay)
+}
+
+function handleKeydown(event) {
+  if (event.key === "Tab") {
+    event.preventDefault()
+
+    const editor = this
+    const start = editor.selectionStart
+    const end = editor.selectionEnd
+
+    editor.value = editor.value.substring(0, start) + "\t" + editor.value.substring(end)
+    editor.selectionStart = editor.selectionEnd = start + 1
+  }
+}
+
+function resize() {
+  const { innerWidth: width, innerHeight: height } = window
+
+  canvas.width = width * dpr
+  canvas.height = height * dpr
+
+  gl.viewport(0, 0, width * dpr, height * dpr)
+}
+
+function setError(message) {
+  error.innerHTML = message
+
+  const match = message.match(/ERROR: \d+:(\d+):/)
+  const lineNumber = match ? parseInt(match[1]) : 0
+  const overlay = document.createElement('pre')
+
+  overlay.classList.add('overlay')
+  overlay.textContent = '\n'.repeat(lineNumber)
+
+  document.body.appendChild(overlay)
+
+  const offsetTop = parseInt(getComputedStyle(overlay).height)
+
+  indicator.style.setProperty('--top', offsetTop + 'px')
+  indicator.style.visibility = 'visible'
+
+  document.body.removeChild(overlay)
+}
+
+function toggleView() {
+  for (const el of [indicator, codeEditor, error]) {
+    el.classList.toggle('hidden')
+  }
+}
+
+function reset() {
+  codeEditor.value = fragmentShader.textContent
+  render()
+}
+
+function toggleResolution() {
+  resolution = btnToggleResolution.checked ? .5 : 1
+  dpr = Math.max(1, resolution * window.devicePixelRatio)
+  resize()
+}
+
+window.onload = function () {
+  gl = canvas.getContext("webgl2")
+
+  if (!editMode) { btnToggleView.checked = true; toggleView() }
+  if (resolution === .5) { btnToggleResolution.checked = true; toggleResolution() }
+  codeEditor.value = localStorage.getItem(storagekey) || fragmentShader.textContent
+
+  codeEditor.addEventListener('keydown', handleKeydown)
+  document.addEventListener('shader-error', e => setError(e.detail))
+  codeEditor.addEventListener('scroll', () => indicator.style.setProperty('--scroll-top', codeEditor.scrollTop + 'px'))
+
+  start()
+}
+
+window.onresize = resize
+window.addEventListener("pointerdown", e => mouse.update(e.clientX, e.clientY, e.pointerId))
+window.addEventListener("pointerup", e => mouse.remove(e.pointerId))
+window.addEventListener("pointermove", e => {
+  if (mouse.touches.has(e.pointerId))
+    mouse.update(e.clientX, e.clientY, e.pointerId)
+})
+  </script>

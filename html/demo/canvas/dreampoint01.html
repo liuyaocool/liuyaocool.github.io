@@ -1,0 +1,28 @@
+<style>
+    
+
+body, html, #app {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+</style>
+
+
+<canvas id="webgl-canvas" style="display: block; width: 1918px; height: 898px;" data-engine="three.js r160"
+width="1918" height="898"></canvas>
+  
+<script  type="module">
+    import { Bokeh1Background } from 'https://cdn.jsdelivr.net/npm/threejs-components@0.0.2/build/backgrounds/bokeh1.cdn.min.js';
+
+    const bokeh1Background = Bokeh1Background(document.getElementById('webgl-canvas'));
+    bokeh1Background.loadMap('https://cdn.jsdelivr.net/npm/threejs-components@0.0.2/build/assets/bokeh-particles2.png');
+    bokeh1Background.setColors([0x6d4862, 0xfd826c, 0x22ccc1]);
+
+    document.body.addEventListener('click', () => {
+      // bokeh1Background.setBackgroundColor(0xffffff * Math.random())
+      bokeh1Background.setColors([0xffffff * Math.random(), 0xffffff * Math.random(), 0xffffff * Math.random()]);
+    });
+    //# sourceURL=pen.js
+</script>
