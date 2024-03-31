@@ -6,26 +6,22 @@
     <link rel="stylesheet" href="../../css/theme.css"/>
 
     <style>
-        #ip {
-            margin: 10px;
+        iframe {
+            width: 150px;
+            height: 36px;
+            background-color: #ffbb7fc2;
+            border: none;
         }
     </style>
 </head>
 <body>
 
-<span id="ip"></span>
+<iframe id="show"></iframe><br>
 <button onclick="window.open('https://qifu-api.baidubce.com/ip/local/geo/v1/district?')">详情</button>
 
 <script src="../../js/config.js"></script>
-<script src="../../js/base.js"></script>
 <script>
-    doHttp({
-        method: 'get',
-        url: Global.apiPath + '/utils/getIP',
-        success: function(res) {
-            document.getElementById('ip').innerText = res;
-        }
-    })
+    document.getElementById('show').src = Global.apiPath + '/utils/getIP';
 </script>
 </body>
 </html>
