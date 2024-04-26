@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
 <title>移动画板</title>
 <style>
     body {
         margin: 0;
         padding: 0;
-        overflow: hidden;
+        overflow: auto;
     }
 
     canvas {
@@ -31,15 +33,33 @@
         box-shadow: #999797c7 0px 1px 0px 1px;
     }
 
+    #touchAxis {
+        position: fixed;
+        left: 2px;
+        top: 2px;
+        font-size: 12px;
+    }
+    #cover {
+        position: absolute; 
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
+
 </style>
 </head>
 <body>
-
-<canvas id="canvas"></canvas>
-
+<div id="board"> 
+    <canvas id="canvas"></canvas>
+    <div id="cover"></div>    
+</div>
+<span id="touchAxis"></span>
 <div class="btns">
     <span class="btn" onclick="undo()">←</span>
-    <span class="btn" onclick="redo()">→</span>    
+    <span class="btn" onclick="redo()">→</span>
+    <span class="btn" onclick="doScale(-0.1)">-</span>
+    <span class="btn" onclick="doScale(0.1)">+</span>
 </div>
 
 <script>
@@ -90,34 +110,44 @@
      * 可以做两层画布 一层绘制(可实时清空 实线画园效果) 一层显示效果
      */
     
-    const canvas = document.getElementById('canvas');
-    // 设置canvas大小
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('canvas'),
+        ctx = canvas.getContext('2d'),
+        cover = document.getElementById('cover'),
+        board = document.getElementById('board'),
+        hisPainter = [], // [{type: data}]
+        painterTypes = {
+            "line": LinePainter
+        };
+
+    let scale = 1.0, // 缩放
+        redoPainter = [],
+        curType = 'line',
+        curPainter; // 切换图形时初始化
+
     ctx.strokeStyle = '#000'; // 画笔颜色
     ctx.lineWidth = 1; // 画笔粗细
     ctx.lineCap = 'round'; // 画笔形状
-    
-    // [{type: data}]
-    const hisPainter = [];
-    let redoPainter = [];
-    let painterTypes = {
-        "line": LinePainter
-    };
-    let curType = 'line';
-    let curPainter; // 切换图形时初始化
-    
-    let isDrawing = false;
-    
+
+    // 设置canvas大小
+    board.style.width = `${canvas.width = window.innerWidth}px`;
+    board.style.height = `${canvas.height = window.innerHeight}px`;
+        
+    function getTouchAxis(touch) {
+        // 这里获得的座标都是相对于屏幕的 ?
+        let a = canvas.getBoundingClientRect();
+        return [(touch.clientX - a.x) / scale, (touch.clientY - a.y) / scale];
+    }
+
     function startDrawing(e) {
-        [x, y] = [e.touches[0].clientX, e.touches[0].clientY];
+        [x, y] = getTouchAxis(e.touches[0]);
         curPainter = new painterTypes[curType](ctx, null).start(x, y);
+        // e.preventDefault();
     }
     function draw(e) {
-        [x, y] = [e.touches[0].clientX, e.touches[0].clientY];
-        console.log(`${curPainter ? 1 : 0} ${x} / ${y}`);
+        [x, y] = getTouchAxis(e.touches[0]);
         if (curPainter) curPainter.move(x, y);
+        showTouchAxis(e);
+        e.preventDefault();
     }
     function stopDrawing(e) {
         if (curPainter) {
@@ -125,6 +155,7 @@
             redoPainter = [];
         }
         curPainter = null;
+        // e.preventDefault();
     }
     
     // 前进
@@ -145,7 +176,7 @@
         }
     }
     
-    canvas.addEventListener('touchstart', function(e) {
+    cover.addEventListener('touchstart', function(e) {
         switch(e.touches.length) {
             case 1: startDrawing(e); break;
             case 2: 
@@ -153,7 +184,8 @@
             default:
         }
     });
-    canvas.addEventListener('touchmove', function(e) {
+    cover.addEventListener('touchmove', function(e) {
+        showTouchAxis(e);
         switch(e.touches.length) {
             case 1: draw(e); break;
             case 2: 
@@ -161,43 +193,26 @@
             default:
         }
     });
-    canvas.addEventListener('touchend', function(e) {
+    cover.addEventListener('touchend', function(e) {
         stopDrawing(e);
         console.log('touchend');
         // e.touches.length --> 0
         // e.changedTouches.length --> 1
     });
     
-    
-        // // 双指缩放
-        // let pinchStartDistance = 0;
-    
-        // canvas.addEventListener('touchstart', function(event) {
-        //     if (event.touches.length === 2) {
-        //         const touch1 = event.touches[0];
-        //         const touch2 = event.touches[1];
-        //         pinchStartDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
-        //     }
-        // });
-    
-        // canvas.addEventListener('touchmove', function(event) {
-        //     if (event.touches.length === 2) {
-        //         const touch1 = event.touches[0];
-        //         const touch2 = event.touches[1];
-        //         const pinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
-        //         const scale = pinchDistance / pinchStartDistance;
-        //         context.scale(scale, scale);
-        //         pinchStartDistance = pinchDistance;
-        //     }
-        // });
-    
-        // canvas.addEventListener('touchend', function(event) {
-        //     if (event.touches.length < 2) {
-        //         context.setTransform(1, 0, 0, 1, 0, 0);
-        //     }
-        // });
-    
-    </script>
+    function showTouchAxis(e, pre) {
+        let a = '';
+        for (let i = 0; i < e.touches.length; i++) {
+            a += `${Math.round(e.touches[i].clientX)},${Math.round(e.touches[i].clientY)}/`;
+        }
+        document.getElementById('touchAxis').innerText = `${pre || ''}${a}`;
+    }
+
+    function doScale(scl) {
+        scale += scl;
+        board.style.transform = 'scale(' + scale + ')';
+    }
+</script>
     
 </body>
 </html>
