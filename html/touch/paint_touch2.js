@@ -1,7 +1,7 @@
 (function (canvas, getMoveInfoFunc) {
 
     let start_p = [], // [[x, y], ...]
-        start_slope = NaN, // 斜率 2个点时有效
+        start_rad = NaN, // 起始线弧度 2个点时有效
         start_distance = 0, // 距离 2个点时有效
         start_middle = [], // 中点 2个点时有效
         offsetX = 0, offsetY = 0,
@@ -16,9 +16,9 @@
         pre = {rad: end.rad, scale: end.scale};
         run = {rad: 0, scale: 1};
         start_p = getTouches(e.touches);
-        start_slope = calcSlope(start_p[0], start_p[1]);
         start_distance = calcDistance(start_p[0], start_p[1]); // ok
         start_middle = calcMiddle(start_p[0], start_p[1]);
+        start_rad = calcLineRad(start_p[0], start_p[1]);
     });
     
     addTouchListener(canvas, 'move', 2, function(e) {
@@ -30,13 +30,16 @@
         let centerX = (mid[0] + start_middle[0]) / 2;
         let centerY = (mid[1] + start_middle[1]) / 2;
 
-        document.getElementById('touchAxis2').innerText = `move2: ${calcRad(start_slope, p[0], p[1])} ${calcRad(start_slope, p[0], p[1]) * (180 / Math.PI)}`;
+        offsetX += centerX;
+        offsetY += centerY;
+
+        document.getElementById('touchAxis2').innerText = `move2 --> center(${centerX.toFixed(0)}, ${centerY.toFixed(0)}) offset(${offsetX.toFixed(0)}, ${offsetY.toFixed(0)})`;
             // `(${p[0][0].toFixed(0)},${p[0][1].toFixed(0)}) / (${p[1][0].toFixed(0)},${p[1][1].toFixed(0)}) => ${calcScale(start_distance, p[0], p[1]).toFixed(0)}`;
 
         getMoveInfoFunc(
             window.innerWidth/2,
             window.innerHeight/2,
-            end.rad = pre.rad + (run.rad = calcRad(start_slope, p[0], p[1])), // 弧度
+            end.rad = pre.rad + (run.rad = calcTwoLineRad(start_rad, p[0], p[1])), // 弧度
             end.scale = pre.scale * (run.scale = calcScale(start_distance, p[0], p[1])), // 缩放 ok
             0, 0
             // offsetX += centerX,
@@ -47,25 +50,24 @@
         }
     });
 
-    // 计算两个点之间的斜率
-    function calcSlope(p1, p2) {
-        return (p2[1] - p1[1]) / (p2[0] - p1[0]);
+    function calcLineRad(p1, p2) {
+        // y与坐标轴方向相反 故取反
+        var x = p2[0] - p1[0], y = p1[1] - p2[1];
+        // 使用反三角函数计算角度（以弧度表示）
+        var angle_radian = Math.atan2(y, x);
+        return angle_radian < 0 ? angle_radian + 2 * Math.PI : angle_radian;
     }
 
     // 计算两条线段的弧度
-    function calcRad(slope1, p1, p2) {
-        // 计算两条线段的斜率
-        var slope2 = calcSlope(p1, p2);
-        // 计算两条线段的夹角（弧度）
-        return Math.atan((slope2 - slope1) / (1 + slope1 * slope2));
+    function calcTwoLineRad(rad, p1, p2) {
+        // 计算两条线段的夹角（弧度） ?? 前 - 后
+        return rad - calcLineRad(p1, p2);
     }
 
     // 计算两条线段的角度
-    function calcAngle(p1, p2) {
-        var angleRad = calcRad(p1, p2);
+    function radToAngle(rad) {
         // 将弧度转换为角度
-        var angleDeg = angleRad * (180 / Math.PI);
-        return angleDeg;
+        return rad * (180 / Math.PI);
     }
 
     function calcScale(distanceLine1, p1, p2) {
