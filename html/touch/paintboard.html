@@ -9,14 +9,21 @@
     body {
         margin: 0;
         padding: 0;
-        overflow: auto;
+        overflow: hidden;
+        background-color: #1d1c1c;
+        height: 100%;
     }
 
-    canvas {
-        display: block;
-        margin: auto;
-        background-color: #f0f0f0;
-        touch-action: none;
+    #canvas {
+        /* display: block; */
+        position: absolute;
+        background-color: #181509;
+        /* 
+        #023408
+        rgb(53 43 11)
+        rgb(53 43 50)
+        */
+        /* touch-action: none; */
     }
     .btns {
         position: fixed;
@@ -39,180 +46,27 @@
         top: 2px;
         font-size: 12px;
     }
-    #cover {
-        position: absolute; 
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
+    #touchAxis2 {
+        position: fixed;
+        left: 2px;
+        top: 15px;
+        font-size: 12px;
     }
 
 </style>
 </head>
 <body>
-<div id="board"> 
-    <canvas id="canvas"></canvas>
-    <div id="cover"></div>    
-</div>
+<canvas id="canvas"></canvas>
 <span id="touchAxis"></span>
+<span id="touchAxis2"></span>
 <div class="btns">
     <span class="btn" onclick="undo()">←</span>
     <span class="btn" onclick="redo()">→</span>
-    <span class="btn" onclick="doScale(-0.1)">-</span>
-    <span class="btn" onclick="doScale(0.1)">+</span>
 </div>
 
-<script>
-    class LinePainter {
-        constructor(ctx, viewCtx) {
-            this.ctx = ctx;
-            this.viewCtx = viewCtx;
-            this.ps = [];
-        }
+<script src="painter.js"></script>
+<script src="paint_touch1.js"></script>
+<script src="paint_touch2.js"></script>
 
-        start(x, y) {
-            this.ps.push([x, y]);
-            this.ctx.beginPath();
-            this.ctx.moveTo(x, y);
-            return this;
-        }
-
-        move(x, y) {
-            this.ps.push([x, y]);
-            this.ctx.lineTo(x, y);
-            this.ctx.stroke();
-            return this;
-        }
-
-        end() {
-            this.ctx.closePath();
-            return this;
-        }
-
-        repaint() {
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.ps[0][0], this.ps[0][1]);
-            for (let i = 1; i < this.ps.length; i++) {
-                ctx.lineTo(this.ps[i][0], this.ps[i][1]);
-            }
-            this.ctx.stroke();
-            this.ctx.closePath();
-            return this;
-        }
-    }
-
-</script>
-
-
-<script>
-
-    /**
-     * 可以做两层画布 一层绘制(可实时清空 实线画园效果) 一层显示效果
-     */
-    
-    const canvas = document.getElementById('canvas'),
-        ctx = canvas.getContext('2d'),
-        cover = document.getElementById('cover'),
-        board = document.getElementById('board'),
-        hisPainter = [], // [{type: data}]
-        painterTypes = {
-            "line": LinePainter
-        };
-
-    let scale = 1.0, // 缩放
-        redoPainter = [],
-        curType = 'line',
-        curPainter; // 切换图形时初始化
-
-    ctx.strokeStyle = '#000'; // 画笔颜色
-    ctx.lineWidth = 1; // 画笔粗细
-    ctx.lineCap = 'round'; // 画笔形状
-
-    // 设置canvas大小
-    board.style.width = `${canvas.width = window.innerWidth}px`;
-    board.style.height = `${canvas.height = window.innerHeight}px`;
-        
-    function getTouchAxis(touch) {
-        // 这里获得的座标都是相对于屏幕的 ?
-        let a = canvas.getBoundingClientRect();
-        return [(touch.clientX - a.x) / scale, (touch.clientY - a.y) / scale];
-    }
-
-    function startDrawing(e) {
-        [x, y] = getTouchAxis(e.touches[0]);
-        curPainter = new painterTypes[curType](ctx, null).start(x, y);
-        // e.preventDefault();
-    }
-    function draw(e) {
-        [x, y] = getTouchAxis(e.touches[0]);
-        if (curPainter) curPainter.move(x, y);
-        showTouchAxis(e);
-        e.preventDefault();
-    }
-    function stopDrawing(e) {
-        if (curPainter) {
-            hisPainter.push(curPainter.end());
-            redoPainter = [];
-        }
-        curPainter = null;
-        // e.preventDefault();
-    }
-    
-    // 前进
-    function redo() {
-        let p = redoPainter.pop();
-        if (!p) return;
-        p.repaint();
-        hisPainter.push(p);
-    }
-    // 回退
-    function undo() {
-        let p = hisPainter.pop();
-        if (!p) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        redoPainter.push(p);
-        for (let i = 0; i < hisPainter.length; i++) {
-            hisPainter[i].repaint();
-        }
-    }
-    
-    cover.addEventListener('touchstart', function(e) {
-        switch(e.touches.length) {
-            case 1: startDrawing(e); break;
-            case 2: 
-                break;
-            default:
-        }
-    });
-    cover.addEventListener('touchmove', function(e) {
-        showTouchAxis(e);
-        switch(e.touches.length) {
-            case 1: draw(e); break;
-            case 2: 
-                break;
-            default:
-        }
-    });
-    cover.addEventListener('touchend', function(e) {
-        stopDrawing(e);
-        console.log('touchend');
-        // e.touches.length --> 0
-        // e.changedTouches.length --> 1
-    });
-    
-    function showTouchAxis(e, pre) {
-        let a = '';
-        for (let i = 0; i < e.touches.length; i++) {
-            a += `${Math.round(e.touches[i].clientX)},${Math.round(e.touches[i].clientY)}/`;
-        }
-        document.getElementById('touchAxis').innerText = `${pre || ''}${a}`;
-    }
-
-    function doScale(scl) {
-        scale += scl;
-        board.style.transform = 'scale(' + scale + ')';
-    }
-</script>
-    
 </body>
 </html>
