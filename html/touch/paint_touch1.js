@@ -14,8 +14,8 @@ let redoPainter = [],
     curType = 'line',
     curColor = '#ffffff',
     curPainter = null, // 切换图形时初始化
-    scale = 1
-    ;
+    scale = 1,
+    touchingLen = 0;
 
 // ctx.strokeStyle = '#ff0000'; // 画笔颜色
 ctx.lineWidth = 1; // 画笔粗细
@@ -30,18 +30,22 @@ function getTouchAxis(touch) {
     return [(touch.clientX - a.x) / scale, (touch.clientY - a.y) / scale];
 }
 
-function startDrawing(e) {
+function touchstart1(e) {
     [x, y] = getTouchAxis(e.touches[0]);
     curPainter = new painterTypes[curType](ctx, null).start(x, y);
-    hisPainter.push(curPainter.end());
     redoPainter = [];
-    // e.preventDefault();
 }
 
-function draw(e) {
+function touchmove1(e) {
     [x, y] = getTouchAxis(e.touches[0]);
     if (curPainter) curPainter.move(curColor, x, y);
-    // e.preventDefault();
+}
+
+function touchend1(e) {
+    if (curPainter) {
+        hisPainter.push(curPainter.end());
+        curPainter = null;
+    }
 }
 
 // 前进
@@ -62,13 +66,27 @@ function undo() {
     }
 }
 
-addTouchListener(canvas, 'start', 1, function(e) {
-    startDrawing(e);
+function touchFunction(evName, e) {
+    showTouchAxis(e.touches, `${evName}(${touchingLen}):`);
+    switch(touchingLen) {
+        case 1:
+        case 2: 
+            window[`${evName}${touchingLen}`](e);
+            break;
+    }
+}
+canvas.addEventListener('touchstart', function(e) {
+    // addEventListener 绑定多个处理函数， 多个函数操作同一变量会覆盖
+    touchingLen = e.touches.length;
+    touchFunction('touchstart', e);
 });
-addTouchListener(canvas, 'move', 1, function(e) {
-    draw(e);
-    showTouchAxis(e.touches);
+canvas.addEventListener('touchmove', function(e) {
+    touchFunction('touchmove', e);
 });
+canvas.addEventListener('touchend', function(e) {
+    touchFunction('touchend', e);
+});
+
 
 function showTouchAxis(touches, pre) {
     let a = '';
@@ -86,18 +104,4 @@ function touch2MoveCall(x, y, rad, scale, offsetX, offsetY) {
     canvas.style.top = `${offsetY}px`;
 
     // document.getElementById('touchAxis').innerText = `[${x}, ${y}] scale=${scale} rad=${rad} [${offsetX}, ${offsetY}]`;
-}
-
-/**
- * 添加触摸事件
- * @param {*} dom dom元素
- * @param {*} eventName  start | move
- * @param {*} touchLen 触摸点个数
- * @param {*} evFunc 事件处理函数
- */
-function addTouchListener(dom, eventName, touchLen, evFunc) {
-    dom.addEventListener(`touch${eventName}`, function(e) {
-        document.getElementById('touchAxis2').innerText = eventName + ' '+ e.changedTouches.length;
-        if (e.touches.length == touchLen) evFunc(e);
-    });
 }
