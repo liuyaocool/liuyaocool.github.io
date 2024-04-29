@@ -1,60 +1,66 @@
 (function () {
 
-    let start_p = [], // [[x, y], ...]
-        start_rad = NaN, // 起始线弧度 2个点时有效
-        start_distance = 0, // 距离 2个点时有效
-        start_middle = [], // 中点 2个点时有效
-        canvas_fixed = [], // 计算 canvas变换的固定点 座标
-        offsetX = 0, offsetY = 0,
-        // end 不能检测到是几个触摸点 这里要自己保存
-        pre = {rad: 0, scale: 1},
-        run = {rad: 0, scale: 1}
+    const start = {
+            p: [[0, 0], [0, 0]],
+            rad: 0, // 起始线弧度
+            distance: 0, // 距离
+            touch_middle: [0, 0], // 屏幕中点
+        },
+        // 开始变换数据： 弧度 缩放 canvas偏移 canvas变换固定点
+        pre = {rad: 0, scale: 1, offset: [0, 0], fixed: [0, 0]},
+        run = {rad: 0, scale: 1, offset: [0, 0]},
+        tmp = {
+            p: [[0, 0], [0, 0]],
+            touch_middle: [0, 0]
+        }
     ;
+    function resetRun() {
+        run.rad = 0;
+        run.scale = 1;
+        run.offset[0] = 0;
+        run.offset[1] = 0;
+    }
 
     window.touchstart2 = function(e) {
-        // 这里要new对象 因为赋值是共用同一份内存
-        run = {rad: 0, scale: 1};
-        start_p = getTouches(e.touches);
-        start_distance = calcDistance(start_p[0], start_p[1]); // ok
-        start_middle = calcMiddle(start_p[0], start_p[1]);
-        start_rad = calcLineRad(start_p[0], start_p[1]);
-        canvas_fixed = calcCanvasFixed(start_middle);
+        resetRun();
+        getTouches(start.p, e.touches);
+        calcMiddle(start.touch_middle, start.p[0], start.p[1]);
+        start.distance = calcDistance(start.p[0], start.p[1]);
+        start.rad = calcLineRad(start.p[0], start.p[1]);
+        /**
+         * 切换变换中点 
+         */
+        // 1. 从屏幕点变换到canvas点
+        convertFixed(pre.fixed, start.touch_middle, pre.scale, pre.rad, pre.offset);
+        // 2. 转换原canvas点到新canvas点
+        convertOffset(pre.offset);
     }
 
     window.touchmove2 = function (e) {
         try {
-        let p = getTouches(e.touches); // 点
+        getTouches(tmp.p, e.touches); // 点
 
-        let scale = pre.scale * (run.scale = calcScale(start_distance, p[0], p[1])); // 缩放 ok
+        let scale = pre.scale * (run.scale = calcScale(start.distance, tmp.p[0], tmp.p[1])); // 缩放 ok
+        let rad = pre.rad + (run.rad = calcTwoLineRad(start.rad, tmp.p[0], tmp.p[1])); // 角度
 
-        let mid = calcMiddle(p[0], p[1]);        
-        let centerX = (mid[0] + start_middle[0]) / 2;
-        let centerY = (mid[1] + start_middle[1]) / 2;
+        calcMiddle(tmp.touch_middle, tmp.p[0], tmp.p[1]);
+        let offsetX = pre.offset[0] + (run.offset[0] = (tmp.touch_middle[0] + start.touch_middle[0]) / 2 / scale);
+        let offsetY = pre.offset[1] + (run.offset[1] = (tmp.touch_middle[1] + start.touch_middle[1]) / 2 / scale);
 
+        document.getElementById('touchAxis2').innerText = `move2:
+        offset(${run.offset[0].toFixed(0)}, ${run.offset[1].toFixed(0)})
+        fixed(${pre.fixed[0].toFixed(2)}, ${pre.fixed[1].toFixed(2)})
+        `;
 
-        offsetX += centerX;
-        offsetY += centerY;
-
-        document.getElementById('touchAxis2').innerText = `move2 --> center(${centerX.toFixed(0)}, ${centerY.toFixed(0)}) offset(${offsetX.toFixed(0)}, ${offsetY.toFixed(0)})`;
-            // `(${p[0][0].toFixed(0)},${p[0][1].toFixed(0)}) / (${p[1][0].toFixed(0)},${p[1][1].toFixed(0)}) => ${calcScale(start_distance, p[0], p[1]).toFixed(0)}`;
-
-        touch2MoveCall(
-            start_canvas_center[0],
-            start_canvas_center[1],
-            pre.rad + (run.rad = calcTwoLineRad(start_rad, p[0], p[1])), // 弧度ok
-            scale,
-            0, 0
-            // offsetX += centerX,
-            // offsetY += centerY,
-        );
-        } catch(e) {
-            document.getElementById('touchAxis').innerText = e;
+        touch2MoveCall(pre.fixed[0], pre.fixed[1], rad, scale, offsetX, offsetY);
+        } catch(ex) {
+            showTouchAxis(e, `${ex.message}\n${ex.stack}`);
         }
     };
 
     window.touchend2 = function(e) {
         pre.rad += run.rad;
-        pre.scale += run.scale;
+        pre.scale *= run.scale;
     };
 
     function calcLineRad(p1, p2) {
@@ -87,23 +93,27 @@
         return Math.sqrt(dx * dx + dy * dy).toFixed(0) * 1;
     }
 
-    function calcMiddle(p1, p2) {
-        return [(p2[0] + p1[0]) / 2, (p2[1] + p1[1]) / 2];
+    function calcMiddle(p, p1, p2) {
+        p[0] = (p2[0] + p1[0]) / 2;
+        p[1] = (p2[1] + p1[1]) / 2;
     }
 
-    function calcCanvasFixed(screenPoint) {
-        let fixed = [];
-        
-
-        return fixed;
+    function convertFixed(p, screenP, scale, rad, offset) {
+        p[0] = screenP[0];
+        p[1] = screenP[1];
+        // p[0] = ;
+        // p[1] = ;
     }
 
-    function getTouches(touches) {
-        let p = [];
-        for (let i = 0; i < touches.length; i++) {
-            p.push([touches[i].clientX, touches[i].clientY]);
-        }
-        return p;
+    function convertOffset(p, screenP, scale, rad, offset) {
+
+    }
+
+    function getTouches(p, touches) {
+        p[0][0] = touches[0].clientX;
+        p[0][1] = touches[0].clientY;
+        p[1][0] = touches[1].clientX;
+        p[1][1] = touches[1].clientY;
     }
 
 })()

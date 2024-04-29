@@ -75,18 +75,26 @@ function touchFunction(evName, e) {
             break;
     }
 }
-canvas.addEventListener('touchstart', function(e) {
+function touchstart(e) {
     // addEventListener 绑定多个处理函数， 多个函数操作同一变量会覆盖
     touchingLen = e.touches.length;
     touchFunction('touchstart', e);
-});
-canvas.addEventListener('touchmove', function(e) {
+}
+function touchmove(e) {
+    if (e.touches.length != touchingLen) {
+        return touchend(e);
+    }
     touchFunction('touchmove', e);
-});
-canvas.addEventListener('touchend', function(e) {
+}
+function touchend(e) {
     touchFunction('touchend', e);
-});
-
+    // 多个手指会触发多次end事件
+    touchingLen = 0;
+    return null;
+}
+canvas.addEventListener('touchstart', touchstart);
+canvas.addEventListener('touchmove', touchmove);
+canvas.addEventListener('touchend', touchend);
 
 function showTouchAxis(touches, pre) {
     let a = '';
