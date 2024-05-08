@@ -69,17 +69,33 @@
     <script src="../../js/config.js"></script>
     <script src="../../js/base.js"></script>
 
-    <script src="https://liuyao_cool.gitee.io/jslib/qrcode/en/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/en/qrcode.min.js"></script>
 
-    <!-- <script src="https://liuyao_cool.gitee.io/jslib/qrcode/delib1/jimp.js"></script> -->
-    <script src="https://liuyao_cool.gitee.io/jslib/qrcode/delib1/jsQR.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib1/jimp.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib1/jsQR.js"></script>
 
-    <script src="https://liuyao_cool.gitee.io/jslib/qrcode/delib2/cli-qrcode.js"></script>
-    <script src="https://liuyao_cool.gitee.io/jslib/qrcode/delib2/qr-cli.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/cli-qrcode.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/qr-cli.js"></script>
 
     <script src="main.js"></script>
 
-    <script src="https://liuyao_cool.gitee.io/jslib/qrcode/delib2/oepncv.js"></script>
+    <script src="https://static.clewm.net/cli/js/decode/oepncv.js"></script>
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var domScript = document.createElement('script');
+            domScript.src = "https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js";
+            domScript.onload = domScript.onreadystatechange = function () {
+                if (!this.readyState || 'loaded' === this.readyState || 'complete' === this.readyState) {
+                    this.onload = this.onreadystatechange = null;
+                    this.parentNode.removeChild(this);
+                }
+            }
+            document.getElementsByTagName('head')[0].appendChild(domScript);
+        });
+        
+    </script> -->
+    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js" async></script>
 
 </body>
 </html>
