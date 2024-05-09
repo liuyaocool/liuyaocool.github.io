@@ -27,6 +27,13 @@ ctx.lineCap = 'round'; // 画笔形状
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+function reset() {
+    pre.scale = 1;
+    pre.offset = [0, 0];
+    pre.fixed = [0, 0];
+    canvasTransform();
+}
+
 function touchstart1(e) {
     convertScreepToCanvas(tmp.p, run.screenp[0], pre.fixed, pre.scale, pre.offset);
     curPainter = new painterTypes[curType](ctx, null).start(tmp.p[0], tmp.p[1]);
@@ -61,14 +68,6 @@ function undo() {
     for (let i = 0; i < hisPainter.length; i++) {
         hisPainter[i].repaint();
     }
-}
-
-function showTouchAxis(touches, pre) {
-    let a = '';
-    for (let i = 0; i < touches.length; i++) {
-        a += `${Math.round(touches[i].clientX)},${Math.round(touches[i].clientY)}/`;
-    }
-    document.getElementById('touchAxis1').innerText = `${pre || ''}${a}`;
 }
 
 // 双指触摸回调
@@ -139,7 +138,6 @@ function touchFunction(evName, e) {
         run.screenp[i][0] = e.touches[i].clientX;
         run.screenp[i][1] = e.touches[i].clientY;
     }
-    showTouchAxis(e.touches, `${evName}(${touchingLen}):`);
     switch(touchingLen) {
         case 1:
         case 2: 
