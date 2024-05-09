@@ -5,17 +5,17 @@ class LinePainter {
         this.ps = [];
     }
 
-    start(x, y) {
-        this.ps.push([x, y]);
+    start(left, top) {
+        this.ps.push([left, top]);
         this.ctx.beginPath();
-        this.ctx.moveTo(x, y);
+        this.ctx.moveTo(left, top);
         return this;
     }
 
-    move(color, x, y) {
-        this.ps.push([x, y]);
+    move(color, left, top) {
+        this.ps.push([left, top]);
         this.ctx.strokeStyle = color;
-        this.ctx.lineTo(x, y);
+        this.ctx.lineTo(left, top);
         this.ctx.stroke();
         return this;
     }

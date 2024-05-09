@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-<title>移动画板</title>
+<title>移动画板172</title>
 <style>
     body {
         margin: 0;
@@ -47,28 +47,32 @@
         font-size: 12px;
         color: white;
     }
-    #touchAxis2 {
-        position: fixed;
-        left: 2px;
-        top: 15px;
-        font-size: 12px;
-        color: white;
-    }
 
 </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
-<span id="touchAxis"></span>
-<span id="touchAxis2"></span>
 <div class="btns">
     <span class="btn" onclick="undo()">←</span>
     <span class="btn" onclick="redo()">→</span>
+    <span class="btn" onclick="reset()">o</span>
 </div>
 
+<div id="touchAxis">
+    <span id="touchAxis1"></span><br>
+    <span id="touchAxis3"></span><br>
+    <span id="touchAxis2"></span><br>
+</div>
+
+
 <script src="painter.js"></script>
-<script src="paint_touch2.js"></script>
-<script src="paint_touch1.js"></script>
+
+<script>
+    let timestamp = new Date().getTime();
+        let src = document.createElement('script');
+        src.src = `paintboard.js?v=${timestamp}`;
+        document.body.appendChild(src);
+</script>
 
 </body>
 </html>
