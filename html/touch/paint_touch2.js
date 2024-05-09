@@ -7,7 +7,6 @@
             touch_middle: [0, 0], // 屏幕中点
         },
         // 初始变换数据： 弧度 缩放 canvas偏移 canvas变换固定点
-        pre = {rad: 0, scale: 1, offset: [0, 0], fixed: [0, 0]},
         run = {rad: 0, scale: 1, offset: [0, 0], fixed: [0, 0]},
         tmp = {
             p: [[0, 0], [0, 0]],
@@ -32,13 +31,17 @@
          */
         // 1. 从屏幕点变换到canvas点
         convertFixed(run.fixed, pre.fixed, start.touch_middle, pre.scale, pre.rad, pre.offset);
+        try {
         // 2. 转换原canvas点到新canvas点
-        convertOffset(run.offset, run.fixed, start.touch_middle, pre.offset);
+        convertOffset(run.offset, start.touch_middle, run.fixed);
 
-
+        document.getElementById('touchAxis2').innerText = `start2: ${window.innerWidth} ${window.innerHeight} rad: ${radToAngle(pre.rad)}
+        screen: ${start.touch_middle[0]}px ${start.touch_middle[1]}px
+        run fixed: ${run.fixed[0]}, ${run.fixed[1]}
+        `;
         // test
-        document.getElementById('point').style.top = `${start.touch_middle[1]}px`;
         document.getElementById('point').style.left = `${start.touch_middle[0]}px`;
+        document.getElementById('point').style.top = `${start.touch_middle[1]}px`;
 
         ctx.beginPath();
         ctx.fillStyle = '#00FF00';
@@ -47,6 +50,10 @@
         // 填充路径
         ctx.fill();
         ctx.closePath();
+
+        } catch(e) {
+            document.getElementById('touchAxis2').innerText = `start2 error: ${e.message} ${e.stack}`;            
+        }
     }
 
     window.touchmove2 = function (e) {
@@ -61,14 +68,17 @@
         let offsetX = pre.offset[0] + (run.offset[0] = (tmp.touch_middle[0] - start.touch_middle[0]));
         let offsetY = pre.offset[1] + (run.offset[1] = (tmp.touch_middle[1] - start.touch_middle[1]));
 
-        document.getElementById('touchAxis2').innerText = `move2: scale=${scale}
-        logg: ${logg}
-        offset(${offsetX.toFixed(0)}, ${offsetY.toFixed(0)})
-        run offset(${run.offset[0].toFixed(0)}, ${run.offset[1].toFixed(0)})
-        pre fixed(${pre.fixed[0].toFixed(2)}, ${pre.fixed[1].toFixed(2)})
-        run fixed(${run.fixed[0].toFixed(2)}, ${run.fixed[1].toFixed(2)})
-        tmp mid(${tmp.touch_middle[0].toFixed(0)}, ${tmp.touch_middle[1].toFixed(0)})
-        `;
+
+
+        document.getElementById('touchAxis3').innerText = `move2: scale=${scale.toFixed(2)} rad=${rad.toFixed(2)} angle=${radToAngle(rad).toFixed(2)}`;
+        // document.getElementById('touchAxis2').innerText = `move2: scale=${scale}
+        // logg: ${logg}
+        // offset(${offsetX.toFixed(0)}, ${offsetY.toFixed(0)})
+        // run offset(${run.offset[0].toFixed(0)}, ${run.offset[1].toFixed(0)})
+        // pre fixed(${pre.fixed[0].toFixed(2)}, ${pre.fixed[1].toFixed(2)})
+        // run fixed(${run.fixed[0].toFixed(2)}, ${run.fixed[1].toFixed(2)})
+        // tmp mid(${tmp.touch_middle[0].toFixed(0)}, ${tmp.touch_middle[1].toFixed(0)})
+        // `;
 
         touch2MoveCall(run.fixed[0], run.fixed[1], rad, scale, offsetX, offsetY);
         } catch(ex) {
@@ -79,8 +89,8 @@
     window.touchend2 = function(e) {
         pre.rad += run.rad;
         pre.scale *= run.scale;
-        pre.offset[0] = run.offset[0];
-        pre.offset[1] = run.offset[1];
+        // pre.offset[0] = run.offset[0];
+        // pre.offset[1] = run.offset[1];
         pre.fixed[0] = run.fixed[0];
         pre.fixed[1] = run.fixed[1];
     };
@@ -99,9 +109,8 @@
         return calcLineRad(p1, p2) - rad;
     }
 
-    // 计算两条线段的角度
+    // 将弧度转换为角度
     function radToAngle(rad) {
-        // 将弧度转换为角度
         return rad * (180 / Math.PI);
     }
 
@@ -120,55 +129,34 @@
         p[1] = (p2[1] + p1[1]) / 2;
     }
 
-    let logg = '';
+    // 转换: 屏幕点 -> 原始画布点
     function convertFixed(p, fixed, screenP, scale, rad, offset) {
-        // p[0] = screenP[0];
-        // p[1] = screenP[1];
-        // 思路 转换座标
-        logg = `rad=${rad} `;
-        // 1. 固定点 平移后的屏幕座标
-        let fix_screen = [fixed[0] + offset[0], fixed[1] + offset[1]];
-        // 2. 屏幕点到固定点连线 到 已经旋转的弧度 间的弧度
-        let screen_p_oldrad_rad = calcTwoLineRad(rad, [fix_screen[0], fix_screen[1]], screenP);
-        let distance = calcDistance(fix_screen, screenP); // 斜边长
-        // 计算邻边的长度
-        const adjacent = distance * Math.cos(screen_p_oldrad_rad);
-        // 计算对边的长度
-        const opposite = distance * Math.sin(screen_p_oldrad_rad);
-
-        calcDistance([fix_screen_x, fix_screen_y], )
-        let px = screenP[0] - (fixed[0] + offset[0]),
-            py = screenP[1] - (fixed[1] + offset[1]);
-        logg += `1(${px}, ${py})`
-        // 2. 根据座标轴旋转角度， 逆转座标点的斜率, chatgpt写的
-        px = px * Math.cos(rad) - py * Math.sin(rad);
-        py = px * Math.sin(rad) + py * Math.cos(rad);
-        logg += `2(${px}, ${py})`
-        // 3. 缩放 得到真实点座标
-        px /= scale;
-        py /= scale;
-        logg += `3(${px}, ${py})`
-        // 4. 加上固定点
-        px += fixed[0];
-        py += fixed[1];
-        logg += `4(${px}, ${py})`
-        // 赋值
-        p[0] = px;
-        p[1] = py;
+        // 1. 新固定点 逆偏移
+        p[0] = screenP[0] - offset[0];
+        p[1] = screenP[1] - offset[1];
+        // 2. 新固定点 逆缩放, 且旧固定点平移到原点(方便步骤3)
+        p[0] = (p[0] - fixed[0]) / scale;
+        p[1] = (p[1] - fixed[1]) / scale;
+        // 3. 新固定点 逆旋转
+        // 3.1 参数准备
+        let rcos = Math.cos(rad), rsin = Math.sin(rad),
+            [x, y] = [p[0], p[1]];// 后边第一行会改变p[0]的值 这里先保存
+        // 3.2 计算旋转后的坐标, +fixed(旧固定点复位)
+        p[0] = x * rcos - y * rsin + fixed[0];
+        p[1] = x * rsin + y * rcos + fixed[1];
     }
 
-    function convertOffset(p, canvasP, screenP, offset) {
-        p[0] = offset[0];
-        p[1] = offset[1];
-        // p[0] = (canvasP[0] - screenP[0]) - offset[0];
-        // p[1] = (canvasP[1] - screenP[1]) - offset[1];
+    function convertOffset(p, screenP, runFixed) {
+        // 当前屏幕点的座标 - 当前屏幕点在原始屏幕(即 画布)座标极为偏移
+        p[0] = screenP[0] - runFixed[0];
+        p[1] = screenP[1] - runFixed[1];
     }
 
     function getTouches(p, touches) {
         p[0][0] = touches[0].clientX;
-        p[0][1] = touches[0].clientY;
+        p[0][1] = -touches[0].clientY;
         p[1][0] = touches[1].clientX;
-        p[1][1] = touches[1].clientY;
+        p[1][1] = -touches[1].clientY;
     }
 
 })()
