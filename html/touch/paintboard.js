@@ -144,6 +144,7 @@ function touchFunction(evName, e) {
             window[`${evName}${touchingLen}`](e);
             break;
     }
+    e.preventDefault();
 }
 
 function touchstart(e) {
@@ -179,11 +180,13 @@ canvas.addEventListener('mousemove', e => {
     if (!pcClick) return;
     touchmove(convertPcToTouch(e));
 });
-canvas.addEventListener('mouseup', e => {
+function mouseOver(e) {
     if (!pcClick) return;
     touchend(convertPcToTouch(e));
     pcClick = false;
-});
-canvas.addEventListener('wheel', e => { 
+}
+canvas.addEventListener('mouseleave', mouseOver);
+canvas.addEventListener('mouseup', mouseOver);
+canvas.addEventListener('wheel', e => {
     console.log(e);
 });

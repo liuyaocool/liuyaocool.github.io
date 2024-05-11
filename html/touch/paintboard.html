@@ -63,5 +63,12 @@
 <script src="painter.js"></script>
 <script src="paintboard.js"></script>
 
+<script>
+    // 判断是否为移动设备
+    if (! /Mobi/.test(navigator.userAgent)) {
+        document.querySelector('.btns').style.fontSize = '25px';
+    }
+</script>
+
 </body>
 </html>
