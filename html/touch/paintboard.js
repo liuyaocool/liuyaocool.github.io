@@ -36,7 +36,7 @@ function reset() {
 
 function touchstart1(e) {
     convertScreepToCanvas(tmp.p, run.screenp[0], pre.fixed, pre.scale, pre.offset);
-    curPainter = new painterTypes[curType](ctx, null).start(tmp.p[0], tmp.p[1]);
+    curPainter = new painterTypes[curType](ctx, null).start(tmp.p[0], tmp.p[1], curColor);
     redoPainter = [];
 }
 
@@ -170,7 +170,8 @@ canvas.addEventListener('touchend', touchend);
 
 let pcClick = false;
 function convertPcToTouch(e) {
-    return { touches: [{clientX: e.clientX, clientY:e.clientY}] };
+    e.touches = [{clientX: e.clientX, clientY:e.clientY}];
+    return e;
 }
 canvas.addEventListener('mousedown', e => {
     touchstart(convertPcToTouch(e));
