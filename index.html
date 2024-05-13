@@ -174,7 +174,20 @@
         // child.contentWindow.document.addEventListener("touchmove", (event) => {germ(event)});
     });
     // 如果直接在标签src上写 不会触发 load事件
-    document.getElementById('main').src = 'a.html';
+    let hash = location.hash.substr(1);
+    document.getElementById('main').src = hash ? hash :  'a.html';
+
+    document.onclick = e => {
+        switch(e.target.tagName) {
+            case "A": 
+                if ('main' == e.target.target) {
+                    location.hash = e.target.getAttribute('href');
+                }
+                break;
+            default:
+                break;
+        }
+    }
 </script>
 
 <!-- 异步 预加载 大文件 静态资源 -->
