@@ -35,9 +35,10 @@
         }
 
         #qrcode {
-            width: 310px;
-            height: 310px;
-            margin-left: calc(50% - 155px);
+            width: 300px;
+            height: 300px;
+            margin-left: calc(50% - 160px);
+            border: 10px solid white;
         }
         
         #qrcode canvas {
@@ -53,7 +54,7 @@
     <div style="border: white 1px solid; padding: 5px 10px; display: inline-block;background-color: gray;">
         <img id="uploadPic" src="" style="width: 300px;">
     </div>
-    <button type="button" onclick="analyzeChoose()">Analyze</button>
+    <button type="button" onclick="analyzeChoose()">Analyze</button><span id="delib2"></span>
     <br/>
     <textarea id="result" placeholder="the analyzed results are shown here (suport clipboard)"></textarea>
 
@@ -79,23 +80,36 @@
 
     <script src="main.js"></script>
 
-    <script src="https://static.clewm.net/cli/js/decode/oepncv.js"></script>
 
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var domScript = document.createElement('script');
-            domScript.src = "https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js";
-            domScript.onload = domScript.onreadystatechange = function () {
-                if (!this.readyState || 'loaded' === this.readyState || 'complete' === this.readyState) {
-                    this.onload = this.onreadystatechange = null;
-                    this.parentNode.removeChild(this);
-                }
-            }
-            document.getElementsByTagName('head')[0].appendChild(domScript);
-        });
+    <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     var domScript = document.createElement('script');
+        //     domScript.src = "https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js";
+        //     domScript.onload = domScript.onreadystatechange = function () {
+        //         console.log(readyState);
+        //         if (!this.readyState || 'loaded' === this.readyState || 'complete' === this.readyState) {
+        //             this.onload = this.onreadystatechange = null;
+        //             this.parentNode.removeChild(this);
+        //         }
+        //     }
+        //     document.body.appendChild(domScript);
+        // });
         
-    </script> -->
-    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js" async></script>
+        // 用此方法才能做到异步
+        setTimeout(() => {
+            document.getElementById('delib2').innerText = '解析库2加载中...';
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js';
+            script.async = true;
+            document.body.appendChild(script);
+            script.onload = function(e) {
+                document.getElementById('delib2').innerText = '解析库2加载完成';
+            }
+        }, 500);
+    </script>
+
+    <!-- <script src="https://static.clewm.net/cli/js/decode/oepncv.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js" async></script> -->
 
 </body>
 </html>
