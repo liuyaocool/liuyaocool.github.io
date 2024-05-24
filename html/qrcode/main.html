@@ -45,16 +45,25 @@
             display: none;
         }
 
+        #delib2 {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 12px;
+            color: gray;
+        }
+
     </style>
 
 </head>
 <body>
 
+    <span id="delib2"></span>
     <div style="height: 30px;"></div>
     <div style="border: white 1px solid; padding: 5px 10px; display: inline-block;background-color: gray;">
         <img id="uploadPic" src="" style="width: 300px;">
     </div>
-    <button type="button" onclick="analyzeChoose()">Analyze</button><span id="delib2"></span>
+    <button type="button" onclick="analyzeChoose()">Analyze</button>
     <br/>
     <textarea id="result" placeholder="the analyzed results are shown here (suport clipboard)"></textarea>
 
@@ -97,14 +106,14 @@
         
         // 用此方法才能做到异步
         setTimeout(() => {
-            document.getElementById('delib2').innerText = 'lib2 loading...';
+            document.getElementById('delib2').innerText = 'oepncv loading...';
             let t = Date.now();
             var script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js';
             script.async = true;
             document.body.appendChild(script);
             script.onload = function(e) {
-                document.getElementById('delib2').innerText = `lib2 load ok ${(Date.now() - t) / 1000}s`;
+                document.getElementById('delib2').innerText = `oepncv load ok ${(Date.now() - t) / 1000}s`;
             }
         }, 500);
     </script>
