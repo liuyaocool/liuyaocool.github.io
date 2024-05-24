@@ -98,12 +98,13 @@
         // 用此方法才能做到异步
         setTimeout(() => {
             document.getElementById('delib2').innerText = '解析库2加载中...';
+            let t = Date.now();
             var script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js';
             script.async = true;
             document.body.appendChild(script);
             script.onload = function(e) {
-                document.getElementById('delib2').innerText = '解析库2加载完成';
+                document.getElementById('delib2').innerText = `解析库2加载完成 ${(Date.now() - t) / 1000}s`;
             }
         }, 500);
     </script>
