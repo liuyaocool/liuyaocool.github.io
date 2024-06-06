@@ -30,17 +30,9 @@
 
         button {
             font-size: 3vh;
-            margin: 2vh;
             border-width: 0.5vh;
         }
 
-        #qrcode {
-            width: 300px;
-            height: 300px;
-            margin-left: calc(50% - 160px);
-            border: 10px solid white;
-        }
-        
         #qrcode canvas {
             display: none;
         }
@@ -53,6 +45,39 @@
             color: gray;
         }
 
+        .show {
+            width: 49%;
+            margin: 10px 0;
+            padding: 10px 0;
+            border-style: solid;
+            border-color: white;
+        }
+
+        .img-div {
+            width: 300px;
+            margin: 10px calc(50% - 160px);
+            border: 10px solid white;
+        }
+        .img-div img{
+            width: 100%;
+            display: block;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+        .grid{
+            display: flex;
+            flex-direction: row;
+            /* align-items: flex-end; 底部对齐 */
+            /* justify-content: center; 水平居中对齐 */
+        }
+        .top {
+            align-self: flex-start; /* 顶部对齐 */
+        }
+        .bottom {
+            align-self: flex-end; /* 底部对齐 */
+        }
     </style>
 
 </head>
@@ -60,21 +85,22 @@
 
     <span id="delib2"></span>
     <div style="height: 30px;"></div>
-    <div style="border: white 1px solid; padding: 5px 10px; display: inline-block;background-color: gray;">
-        <img id="uploadPic" src="" style="width: 300px;">
-    </div>
-    <button type="button" onclick="analyzeChoose()">Analyze</button>
-    <br/>
-    <textarea id="result" placeholder="the analyzed results are shown here (suport clipboard)"></textarea>
-
-    <br/><br/><hr/><br/>
 
     <textarea id="url" placeholder="input string here"></textarea>
-    <br>
-    <button type="button" onclick="generate()">Generate</button>
-    <br>
-    <div id="qrcode"></div>
-    <img id="qrcodeimg" src="" style="width: 300px;">
+    <table style="width: 100%;margin: 10px 0;"><tr>
+        <td style="width: 50%; border-right: 1px solid white; border-bottom: 1px solid white;vertical-align: top;">
+            <button type="button" onclick="generate()">Generate</button>
+            <div id="qrcode" class="img-div"></div>
+        </td>
+        <td style="border-top: 1px solid white;vertical-align: bottom;">
+            <div class="img-div">
+                <img id="uploadPic">
+            </div>
+            <button type="button" onclick="analyzeChoose()">Analyze</button>    
+        </td>
+    </tr></table>
+    <textarea id="result" placeholder="the analyzed results are shown here (suport clipboard)"></textarea>
+
 
     <script src="../../js/config.js"></script>
     <script src="../../js/base.js"></script>
@@ -106,14 +132,14 @@
         
         // 用此方法才能做到异步
         setTimeout(() => {
-            document.getElementById('delib2').innerText = 'oepncv loading...';
+            document.getElementById('delib2').innerText = 'analyze enhance libiary loading...';
             let t = Date.now();
             var script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js';
             script.async = true;
             document.body.appendChild(script);
             script.onload = function(e) {
-                document.getElementById('delib2').innerText = `oepncv load ok ${(Date.now() - t) / 1000}s`;
+                document.getElementById('delib2').innerText = `analyze enhance libiary load ok ${(Date.now() - t) / 1000}s`;
             }
         }, 500);
     </script>
