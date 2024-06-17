@@ -5,7 +5,7 @@
     <title>LY`s World - 二维码 bezier 进制转换 显卡测试</title>
 
     <link rel="stylesheet" href="css/theme.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/liuyaocool/jslib@1.1/effectjs/wag.css"/>
+    <link rel="stylesheet" href="jslib/effectjs/wag.css"/>
 </head>
 
 <style>
@@ -55,10 +55,6 @@
         <li><a target="main" href="html/device/keyboard_check.html">键盘检测</a></li>
         <li><a target="main" href="html/device/videocard.html">显卡检测</a></li>
         <li><a target="main" href="html/device/videocard2.html">显卡检测2</a></li>
-    </div>
-    <li><a href="javascript:showMenu('network')">网络</a></li>
-    <div style="display:none;"  id="network">
-        <li><a target="main" href="html/network/m3u8.html">m3u8</a></li>
     </div>
     <li><a href="javascript:showMenu('datastructure')">数据结构</a></li>
     <div style="display:none;"  id="datastructure">
@@ -160,8 +156,6 @@
     }
 </script>
 
-<script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/effectjs/bgRgbDown.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/effectjs/mouseGerm.js"></script>
 <script>
     let child = document.getElementById('main');
     child.addEventListener('load', ev => {
@@ -189,6 +183,10 @@
         }
     }
 </script>
+
+
+<script src="jslib/effectjs/bgRgbDown.js" defer></script>
+<script src="jslib/effectjs/mouseGerm.js" defer></script>
 
 </body>
 </html>

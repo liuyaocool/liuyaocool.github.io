@@ -105,47 +105,55 @@
     <script src="../../js/config.js"></script>
     <script src="../../js/base.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/en/qrcode.min.js"></script>
+    <script src="../../jslib/qrcode/en/qrcode.min.js"></script>
 
-    <!-- <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib1/jimp.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib1/jsQR.js"></script>
+    <!-- <script src="../../jslib/qrcode/delib1/jimp.js"></script> -->
+    <script src="../../jslib/qrcode/delib1/jsQR.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/cli-qrcode.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/qr-cli.js"></script>
+    <script src="../../jslib/qrcode/delib2/cli-qrcode.js"></script>
+    <script src="../../jslib/qrcode/delib2/qr-cli.js"></script>
 
     <script src="main.js"></script>
 
 
     <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     var domScript = document.createElement('script');
-        //     domScript.src = "https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js";
-        //     domScript.onload = domScript.onreadystatechange = function () {
-        //         console.log(readyState);
-        //         if (!this.readyState || 'loaded' === this.readyState || 'complete' === this.readyState) {
-        //             this.onload = this.onreadystatechange = null;
-        //             this.parentNode.removeChild(this);
-        //         }
+        let opcvJsUrl = '../../jslib/qrcode/delib2/oepncv.js';
+        // opcvJsUrl = 'https://cdn.jsdelivr.net/gh/liuyaocool/hello/jslib/qrcode/delib2/oepncv.js';
+        // opcvJsUrl = 'https://static.clewm.net/cli/js/decode/oepncv.js';
+
+        // let opcvCacheKey = 'opcv_';
+        // if(!localStorage.getItem(opcvCacheKey + 1)) {
+        //     let partLen = 1024 * 1024;
+        //     fetch(opcvJsUrl).then(res => {
+        //         if(!res.ok) return;
+        //         res.text().then(getText => {
+        //             for (let i = 0; ; i++) {
+        //                 let jsPart = getText.substr(partLen * i, partLen)
+        //                 if (!jsPart) break;
+        //                 localStorage.setItem(opcvCacheKey + i, jsPart);
+        //             }
+        //             eval(getText);
+        //         });
+        //     })
+        // } else {
+        //     let opcvJs = '';
+        //     for (let i = 0; ; i++) {
+        //         if (!localStorage.getItem(opcvCacheKey + i)) break;
+        //         opcvJs += localStorage.getItem(opcvCacheKey + i);
         //     }
-        //     document.body.appendChild(domScript);
-        // });
-        
+        //     eval(opcvJs);
+        // }
+
         // 用此方法才能做到异步
-        setTimeout(() => {
-            document.getElementById('delib2').innerText = 'analyze enhance libiary loading...';
-            let t = Date.now();
-            var script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js';
-            script.async = true;
-            document.body.appendChild(script);
-            script.onload = function(e) {
-                document.getElementById('delib2').innerText = `analyze enhance libiary load ok ${(Date.now() - t) / 1000}s`;
-            }
-        }, 500);
+        // document.getElementById('delib2').innerText = 'analyze enhance libiary loading...';
+        // asyncLoadJs(opcvJsUrl, (e, cost) => {
+        //     document.getElementById('delib2').innerText = `analyze enhance libiary load ok ${cost / 1000}s`;
+        // });
     </script>
 
-    <!-- <script src="https://static.clewm.net/cli/js/decode/oepncv.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/gh/liuyaocool/jslib/qrcode/delib2/oepncv.js" async></script> -->
+    <!-- defer 也不会让父页面认为此页面加载完毕 -->
+    <!-- <script src="https://static.clewm.net/cli/js/decode/oepncv.js" defer></script> -->
+    <script src="../../jslib/qrcode/delib2/oepncv.js" defer></script>
 
 </body>
 </html>
