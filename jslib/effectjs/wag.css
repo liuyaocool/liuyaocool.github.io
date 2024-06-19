@@ -1,6 +1,6 @@
 body::after {
     content: ' ';
-    background: url("../img/party_parrot.gif");
+    background: url(https://hello-4bi.pages.dev/jslib/img/party_parrot.gif);
     width: 28px;
     height: 28px;
     display: block;
@@ -8,6 +8,6 @@ body::after {
     position: fixed;
     bottom: 10px;
     right: 10px;
-    pointer-events: none
+    pointer-events: none;
     z-index: 999999;
 }
